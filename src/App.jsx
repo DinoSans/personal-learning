@@ -3,7 +3,21 @@ import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [photo, setPhoto] = useState(null)
+  const [photo, setPhoto] = useState(() => {
+  return localStorage.getItem('itbQuestProfilePhoto')
+})
+useEffect(() => {
+  try {
+    if (photo) {
+      localStorage.setItem('itbQuestProfilePhoto', photo)
+    } else {
+      localStorage.removeItem('itbQuestProfilePhoto')
+    }
+  } catch (error) {
+    console.error('Gagal menyimpan foto profil:', error)
+    alert('Penyimpanan penuh. Coba gunakan foto yang lebih kecil.')
+  }
+}, [photo])
 const [showProfile, setShowProfile] = useState(false)
 const [cameraOpen, setCameraOpen] = useState(false)
 const [cameraError, setCameraError] = useState('')
