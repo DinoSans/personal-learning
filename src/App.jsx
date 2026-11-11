@@ -119,7 +119,57 @@ function takePhoto() {
   setShowProfile(false)
 }
   const [active, setActive] = useState('Dashboard')
+  const [messages, setMessages] = useState([
+  {
+    role: 'assistant',
+    content: 'Halo, Explorer! Aku JARVIS, tutor pribadimu. Ada materi yang ingin kamu pelajari hari ini?'
+  }
+])
 
+const [input, setInput] = useState('')
+const [isLoading, setIsLoading] = useState(false)
+const [chatError, setChatError] = useState('')
+async function sendMessage(event) {
+  event.preventDefault()
+
+  const message = input.trim()
+
+  if (!message || isLoading) return
+
+  setMessages(prev => [
+    ...prev,
+    { role: 'user', content: message }
+  ])
+
+  setInput('')
+  setIsLoading(true)
+  setChatError('')
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'JARVIS sedang mengalami gangguan.')
+    }
+
+    setMessages(prev => [
+      ...prev,
+      { role: 'assistant', content: data.reply }
+    ])
+  } catch (error) {
+    setChatError(error.message || 'Gagal menghubungi JARVIS.')
+  } finally {
+    setIsLoading(false)
+  }
+}
   const menu = [
     ['⌂', 'Dashboard'],
     ['▤', 'Belajar'],
