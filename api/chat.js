@@ -1,5 +1,16 @@
 
 import { GoogleGenAI } from "@google/genai";
+const COOKIE_NAME = "itb_session";
+
+function getSessionToken(req) {
+  const cookies = req.headers.cookie || "";
+  const item = cookies
+    .split(";")
+    .map(value => value.trim())
+    .find(value => value.startsWith(COOKIE_NAME + "="));
+
+  return item ? decodeURIComponent(item.slice(COOKIE_NAME.length + 1)) : "";
+}
 
 export default async function handler(req, res) {
   console.log("JARVIS: Request diterima");
@@ -72,7 +83,50 @@ export default async function handler(req, res) {
     typeof message === "string" && message.trim()
       ? message.trim()
       : "Tolong analisis gambar ini.";
+// CEK DAN GUNAKAN KUOTA CHAT HARIAN
+const sessionToken = getSessionToken(req);
 
+if (!sessionToken) {
+  return res.status(401).json({
+    error: "Silakan login terlebih dahulu."
+  });
+}
+
+try {
+  const authUrl = process.env.AUTH_API_URL;
+  const authSecret = process.env.AUTH_API_SECRET;
+
+  if (!authUrl || !authSecret) {
+    return res.status(500).json({
+      error: "Konfigurasi layanan autentikasi tidak ditemukan."
+    });
+  }
+
+  const quotaResponse = await fetch(
+    `${authUrl.replace(/\/+$/, "")}/consume-chat`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${authSecret}`
+      },
+      body: JSON.stringify({ sessionToken }),
+      signal: AbortSignal.timeout(10000)
+    }
+  );
+
+  const quotaData = await quotaResponse.json();
+
+  if (!quotaResponse.ok) {
+    return res.status(quotaResponse.status).json(quotaData);
+  }
+} catch (error) {
+  console.error("Chat quota error:", error);
+
+  return res.status(503).json({
+    error: "Layanan kuota sedang tidak tersedia. Coba lagi."
+  });
+}
   try {
     const ai = new GoogleGenAI({ apiKey });
 

@@ -1,5 +1,21 @@
 
+const COOKIE_NAME = "itb_session";
+
+function getSessionToken(req) {
+  const cookies = req.headers.cookie || "";
+  const item = cookies
+    .split(";")
+    .map(value => value.trim())
+    .find(value => value.startsWith(COOKIE_NAME + "="));
+
+  return item
+    ? decodeURIComponent(item.slice(COOKIE_NAME.length + 1))
+    : "";
+}
+
 export default async function handler(req, res) {
+  res.setHeader("Cache-Control", "no-store");
+
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -19,6 +35,45 @@ export default async function handler(req, res) {
       });
     }
 
+    // CEK SESSION
+    const sessionToken = getSessionToken(req);
+
+    if (!sessionToken) {
+      return res.status(401).json({
+        error: "Silakan login terlebih dahulu."
+      });
+    }
+
+    // CEK KUOTA GAMBAR HARIAN
+    const authUrl = process.env.AUTH_API_URL;
+    const authSecret = process.env.AUTH_API_SECRET;
+
+    if (!authUrl || !authSecret) {
+      return res.status(500).json({
+        error: "Konfigurasi autentikasi tidak ditemukan."
+      });
+    }
+
+    const quotaResponse = await fetch(
+      `${authUrl.replace(/\/+$/, "")}/consume-image`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authSecret}`
+        },
+        body: JSON.stringify({ sessionToken }),
+        signal: AbortSignal.timeout(10000)
+      }
+    );
+
+    const quotaData = await quotaResponse.json();
+
+    if (!quotaResponse.ok) {
+      return res.status(quotaResponse.status).json(quotaData);
+    }
+
+    // GENERATE GAMBAR MELALUI CLOUDFLARE
     const workerUrl = process.env.CLOUDFLARE_IMAGE_URL;
     const secret = process.env.IMAGE_API_SECRET;
 
@@ -36,7 +91,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         prompt: prompt.trim()
-      })
+      }),
+      signal: AbortSignal.timeout(60000)
     });
 
     const result = await response.json();
