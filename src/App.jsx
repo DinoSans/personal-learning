@@ -30,8 +30,38 @@ async function saveLocalProgress(userId, progress) {
 
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readwrite')
+    const store = transaction.objectStore(STORE_NAME)
+    const request = store.get(userId)
 
-    transaction.objectStore(STORE_NAME).put(progress, userId)
+    request.onsuccess = () => {
+      const previous = request.result
+
+      const sameData = previous &&
+        JSON.stringify({
+          xp: previous.xp,
+          level: previous.level,
+          streak: previous.streak,
+          completed_lessons: previous.completed_lessons,
+          completed_missions: previous.completed_missions,
+          quiz_results: previous.quiz_results
+        }) === JSON.stringify({
+          xp: progress.xp,
+          level: progress.level,
+          streak: progress.streak,
+          completed_lessons: progress.completed_lessons,
+          completed_missions: progress.completed_missions,
+          quiz_results: progress.quiz_results
+        })
+
+      const progressToSave = {
+        ...progress,
+        updated_at: sameData && previous.updated_at
+          ? previous.updated_at
+          : progress.updated_at || new Date().toISOString()
+      }
+
+      store.put(progressToSave, userId)
+    }
 
     transaction.oncomplete = () => {
       db.close()
@@ -57,6 +87,57 @@ async function loadLocalProgress(userId) {
 
     transaction.oncomplete = () => db.close()
   })
+}
+async function syncProgressToServer(progress) {
+  const progressWithTimestamp = {
+    ...progress,
+    updated_at: progress.updated_at || new Date().toISOString()
+  }
+
+  const response = await fetch('/api/progress', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify(progressWithTimestamp)
+  })
+
+  const data = await response.json()
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.error || 'Gagal sinkronisasi progress.')
+  }
+
+  return data
+}
+
+async function loadProgressFromServer() {
+  const response = await fetch('/api/progress', {
+    method: 'GET',
+    credentials: 'same-origin'
+  })
+
+  const data = await response.json()
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.error || 'Gagal mengambil progress server.')
+  }
+
+  const serverProgress = data.progress
+
+  return {
+    xp: Number(serverProgress.xp) || 0,
+    level: Number(serverProgress.level) || 1,
+    streak: Number(serverProgress.streak) || 0,
+    completed_lessons:
+      JSON.parse(serverProgress.completed_lessons || '[]'),
+    completed_missions:
+      JSON.parse(serverProgress.completed_missions || '[]'),
+    quiz_results:
+      JSON.parse(serverProgress.quiz_results || '[]'),
+    updated_at: serverProgress.updated_at || null
+  }
 }
 
 function normalizeLatex(text = '') {
@@ -96,24 +177,91 @@ useEffect(() => {
     setProgressLoadedFor(null)
 
     try {
-      const savedProgress = await loadLocalProgress(user.id)
+      // 1. Ambil progress dari IndexedDB
+      const localProgress = await loadLocalProgress(user.id)
 
-      if (savedProgress && !cancelled) {
-        setProgress(savedProgress)
-      } else if (!cancelled) {
-        setProgress({
-          xp: 0,
-          level: 1,
-          streak: 0,
-          completed_lessons: [],
-          completed_missions: [],
-          quiz_results: []
-        })
+      if (cancelled) return
+
+      let selectedProgress = localProgress || {
+        xp: 0,
+        level: 1,
+        streak: 0,
+        completed_lessons: [],
+        completed_missions: [],
+        quiz_results: [],
+        updated_at: null
       }
-      setProgressLoadedFor(user.id)
+
+      // 2. Coba ambil progress dari server
+      try {
+        const serverProgress = await loadProgressFromServer()
+
+        if (cancelled) return
+
+        const localTime = localProgress?.updated_at
+          ? new Date(localProgress.updated_at).getTime()
+          : 0
+
+        const serverTime = serverProgress.updated_at
+          ? new Date(serverProgress.updated_at).getTime()
+          : 0
+
+        // 3. Pilih data yang lebih baru
+        if (serverTime > localTime) {
+          selectedProgress = serverProgress
+        } else if (
+          localProgress &&
+          localTime >= serverTime
+        ) {
+          selectedProgress = localProgress
+
+          // Upload progress lokal jika lebih baru
+          // atau server belum memiliki data tersimpan.
+          if (localTime > serverTime || !serverTime) {
+            const result = await syncProgressToServer(
+              selectedProgress
+            )
+
+            selectedProgress = {
+              ...selectedProgress,
+              updated_at: result.updated_at ||
+                selectedProgress.updated_at
+            }
+          }
+        } else {
+          selectedProgress = serverProgress
+        }
+
+        setSyncStatus('synced')
+
+      } catch (syncError) {
+        console.warn(
+          'Server tidak tersedia, menggunakan progress lokal:',
+          syncError
+        )
+
+        setSyncStatus('local')
+      }
+
+      if (cancelled) return
+
+      // 4. Terapkan progress terpilih
+      setProgress(selectedProgress)
+
+      // 5. Simpan hasil pilihan ke IndexedDB
+      await saveLocalProgress(user.id, selectedProgress)
+
+      if (!cancelled) {
+        setProgressLoadedFor(user.id)
+      }
+
     } catch (error) {
-      setProgressLoadedFor(user.id)
       console.error('Gagal membaca progress:', error)
+
+      if (!cancelled) {
+        setProgressLoadedFor(user.id)
+      }
+
     } finally {
       if (!cancelled) {
         setProgressLoading(false)
@@ -153,6 +301,29 @@ const [showPassword, setShowPassword] = useState(false)
 const [authLoading, setAuthLoading] = useState(false)
 const [authError, setAuthError] = useState('')
 
+// AUTO SYNC WHEN INTERNET RETURNS
+useEffect(() => {
+  async function handleOnline() {
+    if (!user?.id || progressLoading) return
+
+    try {
+      const result = await syncProgressToServer(progress)
+
+      if (result.success) {
+        setSyncStatus('synced')
+      }
+    } catch (error) {
+      console.error('Gagal sinkronisasi progress:', error)
+      setSyncStatus('local')
+    }
+  }
+
+  window.addEventListener('online', handleOnline)
+
+  return () => {
+    window.removeEventListener('online', handleOnline)
+  }
+}, [user?.id, progress, progressLoading])
 // CHECK LOGIN SESSION
 useEffect(() => {
   let cancelled = false
