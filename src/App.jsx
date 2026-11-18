@@ -1,11 +1,58 @@
 
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import 'katex/dist/katex.min.css'
 import './App.css'
 
+function normalizeLatex(text = '') {
+  return text
+    .replace(/\\\[\s*([\s\S]*?)\s*\\\]/g, (_, f) => `$$\n${f}\n$$`)
+    .replace(/\\\(\s*([\s\S]*?)\s*\\\)/g, (_, f) => `$${f}$`)
+    .replace(/(?<!\\)\[\s*([^\[\]\n]*\\[a-zA-Z]+[^\[\]\n]*)\s*\](?!\()/g,
+      (_, f) => `$$${f}$$`)
+    .replace(/(?<!\\)\(([^()\n]*\\[a-zA-Z]+[^()\n]*)\)/g,
+      (_, f) => `$${f}$`);
+}
 function App() {
   const [photo, setPhoto] = useState(() => {
   return localStorage.getItem('itbQuestProfilePhoto')
 })
+const [chatPhoto, setChatPhoto] = useState(null)
+const chatFileRef = useRef(null)
+
+function handleChatPhoto(event) {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
+
+  if (!allowedTypes.includes(file.type)) {
+    alert('Gunakan gambar JPG, PNG, atau WEBP.')
+    event.target.value = ''
+    return
+  }
+
+  if (file.size > 3 * 1024 * 1024) {
+    alert('Ukuran gambar maksimal 3 MB.')
+    event.target.value = ''
+    return
+  }
+
+  const reader = new FileReader()
+
+  reader.onload = () => {
+    setChatPhoto(reader.result)
+  }
+  reader.onerror = () => {
+  alert('Gagal membaca gambar. Coba pilih gambar lain.')
+}
+
+  reader.readAsDataURL(file)
+  event.target.value = ''
+}
+
 useEffect(() => {
   try {
     if (photo) {
@@ -128,48 +175,111 @@ function takePhoto() {
 
 const [input, setInput] = useState('')
 const [isLoading, setIsLoading] = useState(false)
+const [isGeneratingImage, setIsGeneratingImage] = useState(false)
 const [chatError, setChatError] = useState('')
+
+
 async function sendMessage(event) {
-  event.preventDefault()
+  event.preventDefault();
 
-  const message = input.trim()
+  const message = input.trim();
 
-  if (!message || isLoading) return
+  if ((!message && !chatPhoto) || isLoading) return;
+
+  const imageToSend = chatPhoto;
+
+  const wantsImage =
+    !imageToSend &&
+    /\b(buatkan|buat|bikin|generate|ciptakan)\b.*\b(gambar|image|ilustrasi)\b|\b(gambarkan|ilustrasikan)\b/i.test(message);
 
   setMessages(prev => [
     ...prev,
-    { role: 'user', content: message }
-  ])
+    {
+      role: 'user',
+      content: message || 'Tolong analisis gambar ini.',
+      image: imageToSend
+    }
+  ]);
 
-  setInput('')
-  setIsLoading(true)
-  setChatError('')
+  setInput('');
+  setChatPhoto(null);
+  setIsLoading(true);
+  setIsGeneratingImage(wantsImage);
+  setChatError('');
 
   try {
+    // GENERATE GAMBAR MELALUI CLOUDFLARE
+    if (wantsImage) {
+      const response = await fetch('/api/generate-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt: message
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success || !data.image) {
+        throw new Error(
+          data.error || 'Gagal membuat gambar.'
+        );
+      }
+
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: 'Gambar berhasil dibuat! 🎨',
+          image: data.image
+        }
+      ]);
+
+      return;
+    }
+
+    // CHAT GEMINI TETAP DIPERTAHANKAN
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ message })
-    })
+      body: JSON.stringify({
+        message: message || 'Tolong analisis gambar ini.',
+        image: imageToSend
+      })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'JARVIS sedang mengalami gangguan.')
+      throw new Error(
+        data.error || 'JARVIS sedang mengalami gangguan.'
+      );
     }
 
     setMessages(prev => [
       ...prev,
-      { role: 'assistant', content: data.reply }
-    ])
+      {
+        role: 'assistant',
+        content: data.reply,
+        image: data.image || null
+      }
+    ]);
+
   } catch (error) {
-    setChatError(error.message || 'Gagal menghubungi JARVIS.')
+    setChatError(
+      error.message || 'Gagal menghubungi JARVIS.'
+    );
   } finally {
-    setIsLoading(false)
+    setIsLoading(false);
+    setIsGeneratingImage(false);
   }
 }
+
+
   const menu = [
     ['⌂', 'Dashboard'],
     ['▤', 'Belajar'],
@@ -246,7 +356,7 @@ async function sendMessage(event) {
           </div>
         </header>
 
-        <div className="page-content">
+        <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''}`}>
           <section className="welcome">
             <div>
               <div className="eyebrow">
@@ -353,6 +463,161 @@ async function sendMessage(event) {
             <span>ITB QUEST © 2026</span>
             <span>DESIGNED FOR FUTURE ENGINEERS ✦</span>
           </footer>
+
+<section className="jarvis-page">
+
+  
+<div className="jarvis-banner">
+
+  <div className="jarvis-bg-icons" aria-hidden="true">
+    <span className="float-icon spider">🕸️</span>
+    <span className="float-icon iron">🦾</span>
+    <span className="float-icon math-one">π</span>
+    <span className="float-icon math-two">√</span>
+    <span className="float-icon math-three">∑</span>
+    <span className="float-icon physics-one">E = mc²</span>
+    <span className="float-icon physics-two">F = ma</span>
+    <span className="float-icon atom">⚛️</span>
+    <span className="float-icon spider-two">🕷️</span>
+  </div>
+
+  <div className="jarvis-intro">
+    <span className="section-kicker">PERSONAL AI SYSTEM</span>
+    <h1>HELLO, <span>EXPLORER.</span></h1>
+    <p>
+      Aku JARVIS. Siap membantu perjalananmu
+      menjadi future engineer.
+    </p>
+    <div className="jarvis-status">
+      <span className="status-dot" />
+      GEMINI AI CONNECTED
+    </div>
+  </div>
+
+</div>
+
+  <div className="jarvis-chat-panel">
+    <div className="chat-heading">
+      <div>
+        <span className="section-kicker">NEURAL INTERFACE</span>
+        <h2>JARVIS CHAT</h2>
+      </div>
+      <span className="jarvis-online">● ONLINE</span>
+    </div>
+
+    <div className="message-content">
+  <p>TES LATEX INLINE:</p>
+  <ReactMarkdown
+    remarkPlugins={[remarkMath]}
+    rehypePlugins={[rehypeKatex]}
+  >
+    {'$E = mc^2$'}
+  </ReactMarkdown>
+
+  <p>TES LATEX BESAR:</p>
+  <ReactMarkdown
+    remarkPlugins={[remarkMath]}
+    rehypePlugins={[rehypeKatex]}
+  >
+    {'$$\\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$'}
+  </ReactMarkdown>
+</div>
+<div className="chat-messages">
+  {messages.map((msg, index) => (
+    <div
+      key={index}
+      className={`chat-message ${msg.role}`}
+    >
+      <small>
+        {msg.role === 'assistant' ? 'JARVIS' : 'EXPLORER'}
+      </small>
+
+      {msg.image && (
+  <img
+    src={msg.image}
+    alt="Lampiran percakapan"
+    className="chat-image"
+  />
+)}
+
+<div className="message-content">
+  <ReactMarkdown
+    remarkPlugins={[remarkMath]}
+    rehypePlugins={[rehypeKatex]}
+  >
+    {msg.content}
+  </ReactMarkdown>
+</div>
+    </div>
+  ))}
+
+    {isLoading && (
+    <div className="chat-message assistant">
+      <small>JARVIS</small>
+      <p>
+        {isGeneratingImage
+          ? 'JARVIS sedang menciptakan gambar... 🎨'
+          : 'Sedang memproses pertanyaan...'}
+      </p>
+    </div>
+  )}
+</div>
+
+
+    {chatError && (
+      <p className="chat-error">{chatError}</p>
+    )}
+
+    {chatPhoto && (
+  <div className="image-preview">
+    <img src={chatPhoto} alt="Preview gambar" />
+    <span>Gambar siap dikirim</span>
+    <button
+      type="button"
+      onClick={() => setChatPhoto(null)}
+    >
+      Hapus
+    </button>
+  </div>
+)}
+
+<form className="chat-form" onSubmit={sendMessage}>
+  <input
+    ref={chatFileRef}
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    onChange={handleChatPhoto}
+    hidden
+  />
+
+  <button
+    type="button"
+    className="image-upload-btn"
+    onClick={() => chatFileRef.current?.click()}
+    disabled={isLoading}
+    title="Unggah gambar"
+  >
+    📎
+  </button>
+
+  <input
+    value={input}
+    onChange={(e) => setInput(e.target.value)}
+    placeholder="Tanyakan sesuatu kepada JARVIS..."
+    disabled={isLoading}
+  />
+
+  <button
+    type="submit"
+    disabled={isLoading || (!input.trim() && !chatPhoto)}
+  >
+    SEND ➤
+  </button>
+</form>
+  </div>
+
+</section>
+
         </div>
       </main>
       {showProfile && (

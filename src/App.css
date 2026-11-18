@@ -868,3 +868,613 @@ footer {
   color: #ff9292 !important;
   line-height: 1.5;
 }
+
+/* JARVIS PAGE */
+
+.jarvis-page {
+  display: none;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.page-content.jarvis-active > :not(.jarvis-page) {
+  display: none !important;
+}
+
+.page-content.jarvis-active .jarvis-page {
+  display: flex;
+}
+
+.jarvis-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  padding: 32px;
+  border: 1px solid rgba(0, 170, 255, .25);
+  border-radius: 20px;
+  background: linear-gradient(120deg, #101e38, #07101f);
+  overflow: hidden;
+}
+
+.jarvis-intro h1 {
+  font-size: clamp(25px, 4vw, 42px);
+  margin: 15px 0;
+  color: white;
+}
+
+.jarvis-intro h1 span {
+  color: #20aaff;
+}
+
+.jarvis-intro p {
+  color: #a8b8d0;
+  line-height: 1.7;
+}
+
+.jarvis-status {
+  color: #42dca0;
+  font-size: 11px;
+  margin-top: 20px;
+}
+
+.jarvis-masks {
+  display: flex;
+  gap: 15px;
+}
+
+.mask-card {
+  text-align: center;
+  color: #a9c5e8;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.mask-face {
+  width: 105px;
+  height: 125px;
+  border-radius: 48% 48% 42% 42%;
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,.2);
+  box-shadow: 0 0 25px rgba(0,150,255,.2);
+}
+
+.spider-mask {
+  background:
+    repeating-linear-gradient(45deg, transparent 0 15px, rgba(255,255,255,.12) 16px 17px),
+    linear-gradient(145deg, #ff354c, #690b27);
+}
+
+.iron-mask {
+  background:
+    linear-gradient(145deg, #ffe28a, #c77a16 55%, #701b22);
+}
+
+.mask-face span {
+  filter: drop-shadow(0 2px 4px #000);
+}
+
+.jarvis-symbols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.jarvis-symbols > div {
+  padding: 18px;
+  border: 1px solid rgba(0,160,255,.2);
+  background: #101d32;
+  border-radius: 13px;
+  color: #55baff;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.jarvis-symbols small {
+  display: block;
+  font-size: 9px;
+  color: #91a9c6;
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+
+.jarvis-chat-panel {
+  background: #0c1729;
+  border: 1px solid #1c3655;
+  border-radius: 18px;
+  padding: 22px;
+}
+
+.chat-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #263951;
+  padding-bottom: 18px;
+}
+
+.chat-heading h2 {
+  color: white;
+  margin-top: 7px;
+}
+
+.jarvis-online {
+  color: #42dca0;
+  font-size: 11px;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 220px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 20px 0;
+}
+
+.chat-message {
+  max-width: 85%;
+  padding: 13px 16px;
+  border-radius: 13px;
+  color: #e6f1ff;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.chat-message small {
+  color: #45baff;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.chat-message p {
+  margin-top: 5px;
+  white-space: pre-wrap;
+}
+
+.chat-message.assistant {
+  align-self: flex-start;
+  background: #142b46;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: #075b91;
+}
+
+.chat-form {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #294968;
+  border-radius: 10px;
+  background: #101f34;
+  color: white;
+  outline: none;
+}
+
+.chat-form input:focus {
+  border-color: #20aaff;
+}
+
+.chat-form button {
+  border: none;
+  border-radius: 10px;
+  padding: 0 20px;
+  background: #0789d8;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.chat-form button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.chat-error {
+  color: #ff7777;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 650px) {
+  .jarvis-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+  }
+
+  .jarvis-masks {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .jarvis-symbols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .jarvis-chat-panel {
+    padding: 14px;
+  }
+
+  .chat-form button {
+    padding: 0 12px;
+  }
+}
+
+/* FLOATING JARVIS BACKGROUND */
+
+.jarvis-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 280px;
+  background:
+    radial-gradient(circle at 80% 40%, #123d69 0%, transparent 38%),
+    linear-gradient(120deg, #071426, #102747, #071426);
+}
+
+.jarvis-intro {
+  position: relative;
+  z-index: 2;
+  max-width: 550px;
+}
+
+.jarvis-bg-icons {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.float-icon {
+  position: absolute;
+  color: #39aaff;
+  opacity: .18;
+  user-select: none;
+  animation: jarvisFloat 6s ease-in-out infinite;
+  text-shadow: 0 0 20px #168cff;
+}
+
+.spider {
+  font-size: 75px;
+  top: 15%;
+  right: 23%;
+}
+
+.iron {
+  font-size: 85px;
+  bottom: 5%;
+  right: 5%;
+  color: #ffbd59;
+  text-shadow: 0 0 20px #ff8c27;
+  animation-delay: 1s;
+}
+
+.math-one {
+  font-size: 65px;
+  top: 10%;
+  right: 48%;
+}
+
+.math-two {
+  font-size: 55px;
+  bottom: 15%;
+  right: 38%;
+  animation-delay: 2s;
+}
+
+.math-three {
+  font-size: 60px;
+  top: 65%;
+  right: 58%;
+  animation-delay: 3s;
+}
+
+.physics-one {
+  font-size: 24px;
+  top: 15%;
+  right: 5%;
+  color: #ffbd59;
+}
+
+.physics-two {
+  font-size: 23px;
+  bottom: 15%;
+  right: 22%;
+}
+
+.atom {
+  font-size: 70px;
+  top: 45%;
+  right: 42%;
+  animation-delay: 2s;
+}
+
+.spider-two {
+  font-size: 45px;
+  top: 65%;
+  right: 12%;
+  animation-delay: 1.5s;
+}
+
+@keyframes jarvisFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(5deg);
+  }
+}
+
+@media (max-width: 650px) {
+  .jarvis-banner {
+    min-height: 260px;
+  }
+
+  .spider {
+    right: 12%;
+    font-size: 55px;
+  }
+
+  .iron {
+    font-size: 60px;
+  }
+
+  .float-icon {
+    opacity: .13;
+  }
+}
+
+/* JARVIS VIBRANT NEON THEME */
+
+.jarvis-chat-panel {
+  background: linear-gradient(145deg, #0b1830, #17142f);
+  border: 1px solid #287edb;
+  border-radius: 20px;
+  box-shadow:
+    0 0 15px rgba(0, 145, 255, .22),
+    0 0 35px rgba(110, 55, 255, .12);
+}
+
+.chat-heading h2 {
+  color: #65ddff;
+  text-shadow: 0 0 12px #168bff;
+}
+
+.jarvis-online {
+  color: #56ffc1;
+  text-shadow: 0 0 12px #00d995;
+}
+
+.chat-message.assistant {
+  background: linear-gradient(120deg, #073e65, #123d78);
+  border: 1px solid #13bfff;
+  box-shadow: 0 0 18px rgba(0, 190, 255, .2);
+}
+
+.chat-message.assistant small {
+  color: #55e5ff;
+  text-shadow: 0 0 10px #00aeff;
+}
+
+.chat-message.user {
+  background: linear-gradient(120deg, #492b91, #263e91);
+  border: 1px solid #a58aff;
+  box-shadow: 0 0 18px rgba(143, 92, 255, .23);
+}
+
+.chat-message.user small {
+  color: #e1c6ff;
+  text-shadow: 0 0 10px #9c65ff;
+}
+
+.chat-message p {
+  color: #ffffff;
+}
+
+.chat-form input {
+  background: #101d39;
+  color: #fff;
+  border: 1px solid #388dff;
+}
+
+.chat-form input:focus {
+  border-color: #51e5ff;
+  box-shadow: 0 0 0 2px rgba(0, 200, 255, .18),
+              0 0 18px rgba(0, 180, 255, .3);
+}
+
+.chat-form input::placeholder {
+  color: #91b4d9;
+}
+
+.chat-form button {
+  background: linear-gradient(120deg, #008cff, #744bff);
+  color: white;
+  border: 1px solid #75d8ff;
+  box-shadow: 0 0 16px rgba(0, 145, 255, .4);
+  transition: .25s ease;
+}
+
+.chat-form button:hover:not(:disabled) {
+  filter: brightness(1.2);
+  box-shadow: 0 0 25px rgba(0, 180, 255, .55);
+  transform: translateY(-2px);
+}
+/* JARVIS MARKDOWN */
+
+.message-content {
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.message-content p {
+  margin: 8px 0;
+}
+
+.message-content h1,
+.message-content h2,
+.message-content h3 {
+  margin: 18px 0 10px;
+  color: #ffffff;
+}
+
+.message-content strong {
+  color: #65c7ff;
+  font-weight: 700;
+}
+
+.message-content ul,
+.message-content ol {
+  padding-left: 24px;
+  margin: 10px 0;
+}
+
+.message-content li {
+  margin: 5px 0;
+}
+
+.message-content blockquote {
+  border-left: 3px solid #35aaff;
+  padding-left: 14px;
+  margin: 12px 0;
+  color: #a9c8df;
+}
+
+.message-content pre {
+  background: #071525;
+  border: 1px solid rgba(65, 170, 255, 0.25);
+  border-radius: 10px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.message-content code {
+  background: rgba(48, 145, 220, 0.13);
+  color: #7dd3fc;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.message-content pre code {
+  background: transparent;
+  padding: 0;
+  color: #d7edff;
+}
+
+.message-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+}
+
+.message-content th,
+.message-content td {
+  border: 1px solid rgba(100, 180, 255, 0.25);
+  padding: 9px;
+  text-align: left;
+}
+
+.message-content th {
+  background: rgba(35, 130, 220, 0.15);
+  color: #65c7ff;
+}
+
+.message-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 12px 4px;
+  margin: 12px 0;
+}
+
+.message-content a {
+  color: #65c7ff;
+}
+
+/* JARVIS IMAGE UPLOAD */
+
+.chat-form {
+  align-items: center;
+}
+
+.image-upload-btn {
+  width: 46px;
+  min-width: 46px;
+  height: 46px;
+  border: 1px solid #388dff;
+  border-radius: 10px;
+  background: #101d39;
+  color: #65ddff;
+  font-size: 21px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.image-upload-btn:hover {
+  background: #173d67;
+  box-shadow: 0 0 15px #168bff66;
+}
+
+.image-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: #101d39;
+  border: 1px solid #287edb;
+  border-radius: 12px;
+}
+
+.image-preview img {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.image-preview button {
+  margin-left: auto;
+  padding: 8px 12px;
+  border: 1px solid #ff6464;
+  border-radius: 8px;
+  background: transparent;
+  color: #ff8585;
+  cursor: pointer;
+}
+
+.chat-image {
+  display: block;
+  max-width: min(100%, 320px);
+  max-height: 320px;
+  object-fit: contain;
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid #388dff66;
+}
+
+@media (max-width: 650px) {
+  .image-upload-btn {
+    width: 42px;
+    min-width: 42px;
+  }
+
+  .chat-image {
+    max-width: 100%;
+  }
+}
