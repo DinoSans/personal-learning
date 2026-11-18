@@ -991,7 +991,7 @@ if (!response.ok) {
           </div>
         </header>
 
-        <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''}`}>
+        <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''} ${active === 'Belajar' ? 'learning-active' : ''}`}>
           {active === 'Admin' && user?.role === 'admin' && (
   <section className="admin-page">
     <div className="admin-heading">
@@ -1118,6 +1118,154 @@ if (!response.ok) {
           </table>
         </div>
       )}
+    </div>
+  </section>
+)}
+{active === 'Belajar' && (
+  <section className="learning-page">
+    <div className="learning-hero">
+      <div className="learning-hero-content">
+        <span className="section-kicker">KNOWLEDGE CENTER</span>
+        <h1>EXPLORE YOUR <span>UNIVERSE.</span></h1>
+        <p>
+          Perluas wawasan, temukan hal baru, dan mulai
+          perjalananmu menjadi future engineer.
+        </p>
+        <div className="learning-hero-status">
+          <span className="status-dot" />
+          3 SUBJECTS AVAILABLE
+        </div>
+      </div>
+
+      <div className="learning-orbit">
+        <div className="learning-orbit-ring ring-one" />
+        <div className="learning-orbit-ring ring-two" />
+        <div className="learning-orbit-core">IQ</div>
+        <span className="orbit-symbol symbol-one">π</span>
+        <span className="orbit-symbol symbol-two">⚛</span>
+        <span className="orbit-symbol symbol-three">∑</span>
+      </div>
+    </div>
+
+    <div className="learning-section-heading">
+      <div>
+        <span className="section-kicker">SELECT YOUR SUBJECT</span>
+        <h2>Learning <span>Modules.</span></h2>
+        <p>Pilih bidang ilmu yang ingin kamu jelajahi.</p>
+      </div>
+      <span className="learning-count">03 / 03 SUBJECTS</span>
+    </div>
+
+    <div className="subject-grid">
+      <div className="subject-card math-card">
+        <div className="subject-card-top">
+          <span className="subject-number">01</span>
+          <span className="subject-category">LOGIC & NUMBERS</span>
+        </div>
+
+        <div className="subject-visual math-visual">
+          <span className="math-symbol symbol-pi">π</span>
+          <span className="math-symbol symbol-sigma">Σ</span>
+          <span className="math-symbol symbol-root">√x</span>
+          <span className="math-symbol symbol-integral">∫</span>
+          <div className="math-core">∑</div>
+        </div>
+
+        <div className="subject-info">
+          <span className="subject-kicker">SUBJECT 01</span>
+          <h3>Matematika<span>.</span></h3>
+          <p>
+            Jelajahi angka, pola, aljabar, geometri,
+            hingga konsep kalkulus.
+          </p>
+          <div className="subject-tags">
+            <span>Aljabar</span>
+            <span>Geometri</span>
+            <span>Kalkulus</span>
+          </div>
+        </div>
+
+        <div className="subject-card-footer">
+          <span>KNOWLEDGE MODULE</span>
+          <span className="subject-arrow">↗</span>
+        </div>
+      </div>
+
+      <div className="subject-card physics-card">
+        <div className="subject-card-top">
+          <span className="subject-number">02</span>
+          <span className="subject-category">SCIENCE & ENERGY</span>
+        </div>
+
+        <div className="subject-visual physics-visual">
+          <div className="physics-orbit orbit-a" />
+          <div className="physics-orbit orbit-b" />
+          <div className="physics-core">⚛</div>
+          <span className="physics-formula formula-a">F = ma</span>
+          <span className="physics-formula formula-b">E = mc²</span>
+        </div>
+
+        <div className="subject-info">
+          <span className="subject-kicker">SUBJECT 02</span>
+          <h3>Fisika<span>.</span></h3>
+          <p>
+            Pahami cara alam semesta bekerja melalui
+            energi, gerak, gaya, dan gelombang.
+          </p>
+          <div className="subject-tags">
+            <span>Mekanika</span>
+            <span>Energi</span>
+            <span>Gelombang</span>
+          </div>
+        </div>
+
+        <div className="subject-card-footer">
+          <span>KNOWLEDGE MODULE</span>
+          <span className="subject-arrow">↗</span>
+        </div>
+      </div>
+
+      <div className="subject-card astronomy-card">
+        <div className="subject-card-top">
+          <span className="subject-number">03</span>
+          <span className="subject-category">SPACE & COSMOS</span>
+        </div>
+
+        <div className="subject-visual astronomy-visual">
+          <div className="space-orbit space-orbit-one" />
+          <div className="space-orbit space-orbit-two" />
+          <div className="space-planet">◉</div>
+          <span className="space-star star-a">✦</span>
+          <span className="space-star star-b">✧</span>
+          <span className="space-star star-c">✦</span>
+          <span className="space-moon">◐</span>
+        </div>
+
+        <div className="subject-info">
+          <span className="subject-kicker">SUBJECT 03</span>
+          <h3>Astronomi<span>.</span></h3>
+          <p>
+            Kenali planet, bintang, galaksi, dan
+            misteri luasnya alam semesta.
+          </p>
+          <div className="subject-tags">
+            <span>Tata Surya</span>
+            <span>Bintang</span>
+            <span>Galaksi</span>
+          </div>
+        </div>
+
+        <div className="subject-card-footer">
+          <span>KNOWLEDGE MODULE</span>
+          <span className="subject-arrow">↗</span>
+        </div>
+      </div>
+    </div>
+
+    <div className="learning-bottom-note">
+      <span>✦</span>
+      KNOWLEDGE IS THE FIRST STEP TO GREATNESS.
+      <span>✦</span>
     </div>
   </section>
 )}
