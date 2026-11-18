@@ -1155,10 +1155,6 @@ if (!response.ok) {
         <span className="subject-kicker">MATERI 01</span>
         <h2>Mengenal Angka</h2>
         <p>Mengenal angka dan memahami dasar bilangan.</p>
-        <div className="material-footer">
-          <span>SEGERA HADIR</span>
-          <span>🔒</span>
-        </div>
       </div>
 
       <div className="math-material-card">
