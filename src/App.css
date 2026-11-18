@@ -2664,399 +2664,302 @@ footer {
   }
 }
 
-/* ==========================================
-   ITB QUEST — MATHEMATICAL DIMENSION 10X
-========================================== */
+
+/* =========================================
+   ITB QUEST — MATHEMATICAL DIMENSION ULTRA
+   ========================================= */
 
 .math-entry-animation {
   position: fixed;
   inset: 0;
   z-index: 99999;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  overflow: hidden;
-  isolation: isolate;
-  perspective: 1200px;
+  justify-content: center;
   background:
-    radial-gradient(ellipse at center, #102c68 0%, #07152e 42%, #01030b 100%);
-  animation: dimensionScreen 1.8s ease-in-out forwards;
+    radial-gradient(ellipse at center, #102e63 0%, #07152f 38%, #020611 100%);
+  isolation: isolate;
+  animation: mathDimensionZoom 1.8s ease-in-out forwards;
 }
 
-/* DIGITAL MATHEMATICAL GRID */
-
+/* DIGITAL GRID */
 .math-entry-animation::before {
   content: "";
   position: absolute;
-  inset: -100%;
+  inset: -50%;
   z-index: -2;
   background-image:
-    linear-gradient(rgba(49, 166, 255, .13) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(49, 166, 255, .13) 1px, transparent 1px);
-  background-size: 45px 45px;
-  transform: perspective(450px) rotateX(65deg) scale(2);
-  animation: mathGridMove 3s linear infinite;
+    linear-gradient(rgba(48, 151, 255, .16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(48, 151, 255, .16) 1px, transparent 1px);
+  background-size: 48px 48px;
+  transform: perspective(550px) rotateX(65deg) scale(1.5);
+  animation: mathGridMove 1.8s linear infinite;
+  mask-image: radial-gradient(ellipse, black 15%, transparent 70%);
 }
 
+/* GEOMETRIC LIGHT */
 .math-entry-animation::after {
-  content: "x²  +  y²  =  z²     π     √     ∑     ∞";
+  content: "∑     π     √     ∞     x²     ÷     ×     ∆";
   position: absolute;
   top: 12%;
   width: 100%;
   text-align: center;
-  color: rgba(91, 203, 255, .22);
-  font-size: clamp(12px, 2vw, 22px);
+  color: rgba(91, 183, 255, .18);
+  font-size: clamp(18px, 4vw, 42px);
   font-weight: 900;
-  letter-spacing: 12px;
-  text-shadow: 0 0 20px #008cff;
-  animation: formulaAtmosphere 1.8s ease forwards;
-  pointer-events: none;
+  letter-spacing: 18px;
+  text-shadow: 0 0 25px #168cff;
+  animation: mathFormulaFlash 1.8s ease-in-out infinite;
 }
 
-/* CENTRAL ENERGY */
-
+/* CENTRAL LIGHT */
 .math-entry-glow {
   position: absolute;
-  width: min(80vw, 700px);
+  width: min(90vw, 900px);
   aspect-ratio: 1;
   border-radius: 50%;
-  background:
-    radial-gradient(circle,
-      rgba(100, 225, 255, .8) 0%,
-      rgba(0, 119, 255, .5) 20%,
-      rgba(32, 61, 255, .2) 45%,
-      transparent 70%);
-  filter: blur(55px);
-  animation: dimensionGlow 1.8s ease-in-out infinite alternate;
+  background: radial-gradient(
+    circle,
+    rgba(20, 112, 255, .36) 0%,
+    rgba(0, 78, 255, .13) 35%,
+    transparent 70%
+  );
+  filter: blur(15px);
+  animation: mathGlowPulse .7s ease-in-out infinite alternate;
 }
-
-/* GEOMETRY TUNNEL */
 
 .math-entry-glow::before,
 .math-entry-glow::after {
   content: "";
   position: absolute;
-  inset: 12%;
-  border: 2px solid rgba(83, 210, 255, .4);
+  inset: 10%;
+  border: 2px solid rgba(69, 172, 255, .28);
   clip-path: polygon(
-    50% 0%, 95% 25%, 95% 75%,
-    50% 100%, 5% 75%, 5% 25%
+    50% 0%, 61% 13%, 85% 8%, 87% 32%,
+    100% 50%, 87% 68%, 85% 92%,
+    61% 87%, 50% 100%, 39% 87%,
+    15% 92%, 13% 68%, 0% 50%,
+    13% 32%, 15% 8%, 39% 13%
   );
-  box-shadow: 0 0 30px #008cff;
-  animation: geometrySpin 5s linear infinite;
+  animation: mathShapeRotate 5s linear infinite;
 }
 
 .math-entry-glow::after {
-  inset: 25%;
-  border-color: rgba(255, 255, 255, .55);
-  clip-path: polygon(
-    50% 0%, 100% 50%, 50% 100%, 0% 50%
-  );
+  inset: 20%;
+  border-color: rgba(0, 213, 255, .45);
   animation-direction: reverse;
   animation-duration: 3s;
 }
 
 /* PORTAL */
-
 .math-entry-portal {
   position: relative;
-  width: 270px;
-  height: 270px;
+  width: min(65vw, 430px);
+  aspect-ratio: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
-  transform-style: preserve-3d;
-  animation: dimensionZoom 1.8s cubic-bezier(.55, 0, .2, 1) forwards;
-}
-
-.math-entry-portal::before {
-  content: "";
-  position: absolute;
-  inset: 15%;
-  border-radius: 50%;
-  background:
-    conic-gradient(
-      from 0deg,
-      #051c65,
-      #35dfff,
-      #0754ff,
-      #a0f5ff,
-      #1426a0,
-      #051c65
-    );
-  filter: blur(3px);
-  box-shadow:
-    0 0 25px #00aaff,
-    0 0 65px #0066ff,
-    0 0 130px #174bff;
-  animation: portalEnergy 2s linear infinite;
-}
-
-.math-entry-portal::after {
-  content: "";
-  position: absolute;
-  inset: -28px;
-  border: 2px dashed rgba(117, 224, 255, .75);
-  border-radius: 50%;
-  box-shadow: 0 0 25px #008cff;
-  animation: outerMathRing 4s linear infinite;
+  justify-content: center;
+  perspective: 900px;
+  animation: mathPortalAppear .8s cubic-bezier(.2, .8, .2, 1) both;
 }
 
 /* PORTAL RINGS */
-
 .math-entry-ring {
   position: absolute;
   inset: 0;
-  border: 3px solid #52ddff;
   border-radius: 50%;
+  border: 3px solid transparent;
   box-shadow:
-    0 0 15px #008cff,
-    0 0 35px #008cff,
-    inset 0 0 25px #008cff;
+    0 0 18px rgba(0, 145, 255, .7),
+    inset 0 0 18px rgba(0, 145, 255, .4);
 }
 
-.math-entry-ring.ring-one {
-  border-width: 4px;
-  animation: mathRingOne 3s linear infinite;
+.ring-one {
+  border-top-color: #75eaff;
+  border-right-color: #167cff;
+  border-bottom-color: #315bff;
+  animation: mathRingRotate 2s linear infinite;
 }
 
-.math-entry-ring.ring-two {
-  inset: 20px;
-  border-color: white;
+.ring-two {
+  inset: 9%;
   border-width: 2px;
-  box-shadow: 0 0 25px white, inset 0 0 20px #38bdf8;
-  animation: mathRingTwo 2s linear infinite;
+  border-left-color: #00eaff;
+  border-bottom-color: #398aff;
+  border-style: dashed;
+  animation: mathRingRotateReverse 3s linear infinite;
 }
 
-.math-entry-ring.ring-three {
-  inset: 43px;
-  border-color: #168cff;
-  border-width: 4px;
-  animation: mathRingThree 1.3s linear infinite;
+.ring-three {
+  inset: 19%;
+  border-width: 3px;
+  border-top-color: #ffffff;
+  border-left-color: #00aaff;
+  border-style: dotted;
+  animation: mathRingRotate 1.4s linear infinite;
 }
 
-/* CENTER */
-
+/* PORTAL CENTER */
 .math-entry-core {
-  position: relative;
-  z-index: 5;
+  width: 48%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #b8f5ff 0%, #168fff 16%, #063caa 45%, #02091e 75%);
   color: white;
-  font-size: 32px;
-  font-weight: 900;
-  letter-spacing: 6px;
+  font-size: clamp(20px, 5vw, 38px);
+  font-weight: 1000;
+  letter-spacing: 5px;
   text-shadow:
-    0 0 10px white,
-    0 0 25px #32caff,
-    0 0 50px #008cff;
-  animation: coreEnergy .6s ease-in-out infinite alternate;
+    0 0 8px white,
+    0 0 25px #00c8ff,
+    0 0 50px #168cff;
+  box-shadow:
+    0 0 25px #168cff,
+    0 0 70px rgba(0, 145, 255, .9),
+    inset 0 0 35px rgba(255, 255, 255, .65);
+  animation: mathCorePulse .55s ease-in-out infinite alternate;
 }
 
-/* FLYING NUMBERS AND SYMBOLS */
-
+/* FLYING MATH SYMBOLS */
 .math-entry-symbols {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 4;
 }
 
 .math-entry-symbols span {
   position: absolute;
-  left: calc(50% + (var(--i) * 29px - 160px));
-  top: calc(50% + (var(--i) * 17px - 90px));
-  color: #b8f4ff;
-  font-size: 32px;
+  left: calc(50% + (var(--i) - 6) * 5%);
+  top: calc(50% + (var(--i) - 6) * 3%);
+  color: #9cecff;
+  font-size: clamp(20px, 4vw, 38px);
   font-weight: 900;
   text-shadow:
-    0 0 10px white,
-    0 0 25px #008cff,
-    0 0 45px #008cff;
-  animation: mathSymbolWarp 1.8s cubic-bezier(.2, .8, .2, 1) forwards;
-  animation-delay: calc(var(--i) * .025s);
+    0 0 8px #00aaff,
+    0 0 25px #0077ff;
+  animation: mathSymbolFly 1.8s cubic-bezier(.15, .7, .25, 1) both;
+  animation-delay: calc(var(--i) * -0.045s);
 }
 
 /* TITLE */
-
 .math-entry-animation h1 {
   position: relative;
-  z-index: 6;
-  margin-top: 55px;
-  color: #9beaff;
-  font-size: 19px;
-  font-weight: 900;
-  letter-spacing: 5px;
+  margin-top: 35px;
+  padding: 0 15px;
+  color: #e9f8ff;
+  font-size: clamp(17px, 3vw, 30px);
+  font-weight: 1000;
+  letter-spacing: clamp(2px, 1vw, 8px);
   text-align: center;
-  text-shadow: 0 0 20px #008cff;
-  animation: dimensionTitle 1.8s ease forwards;
+  text-shadow:
+    0 0 10px #fff,
+    0 0 25px #168cff,
+    0 0 50px #0066ff;
+  animation: mathTitleReveal .8s ease-out both;
 }
 
 .math-entry-animation p {
   position: relative;
-  z-index: 6;
   margin-top: 12px;
-  color: #c0ddff;
-  font-size: 10px;
+  color: #77caff;
+  font-size: clamp(9px, 1.5vw, 13px);
   letter-spacing: 3px;
   text-align: center;
-  animation: dimensionTitle 1.8s ease forwards;
+  animation: mathSubtitleReveal 1s ease-out both;
 }
 
-/* KEYFRAMES */
-
-@keyframes dimensionScreen {
-  0% { opacity: 0; }
-  10%, 75% { opacity: 1; }
-  100% { opacity: 0; }
+/* ANIMATIONS */
+@keyframes mathDimensionZoom {
+  0% { opacity: 0; transform: scale(1.15); }
+  12% { opacity: 1; }
+  78% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.8); }
 }
 
 @keyframes mathGridMove {
   from { background-position: 0 0; }
-  to { background-position: 0 180px; }
+  to { background-position: 0 48px; }
 }
 
-@keyframes formulaAtmosphere {
-  0%, 10% {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-  35%, 75% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
+@keyframes mathFormulaFlash {
+  0%, 100% { opacity: .15; transform: scale(.9); }
+  50% { opacity: .65; transform: scale(1.08); }
 }
 
-@keyframes dimensionGlow {
-  from {
-    transform: scale(.65) rotate(0deg);
-    opacity: .35;
-  }
-  to {
-    transform: scale(1.3) rotate(20deg);
-    opacity: .85;
-  }
+@keyframes mathGlowPulse {
+  from { transform: scale(.75); opacity: .45; }
+  to { transform: scale(1.15); opacity: 1; }
 }
 
-@keyframes geometrySpin {
+@keyframes mathShapeRotate {
   from { transform: rotate(0deg) scale(.8); }
-  to { transform: rotate(360deg) scale(1.1); }
+  to { transform: rotate(360deg) scale(1.15); }
 }
 
-@keyframes portalEnergy {
-  from { transform: rotate(0deg) scale(.9); }
-  to { transform: rotate(360deg) scale(1.1); }
+@keyframes mathPortalAppear {
+  from { opacity: 0; transform: scale(.1) rotate(-90deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
 }
 
-@keyframes outerMathRing {
-  from { transform: rotate(0deg) scale(1); }
-  to { transform: rotate(360deg) scale(1.08); }
+@keyframes mathRingRotate {
+  to { transform: rotate(360deg); }
 }
 
-@keyframes mathRingOne {
-  from { transform: rotateX(65deg) rotate(0deg); }
-  to { transform: rotateX(65deg) rotate(360deg); }
+@keyframes mathRingRotateReverse {
+  to { transform: rotate(-360deg); }
 }
 
-@keyframes mathRingTwo {
-  from { transform: rotateY(65deg) rotate(360deg); }
-  to { transform: rotateY(65deg) rotate(0deg); }
+@keyframes mathCorePulse {
+  from { transform: scale(.88); filter: brightness(.8); }
+  to { transform: scale(1.12); filter: brightness(1.5); }
 }
 
-@keyframes mathRingThree {
-  from { transform: rotate(0deg) scale(.9); }
-  to { transform: rotate(360deg) scale(1.08); }
-}
-
-@keyframes coreEnergy {
-  from { transform: scale(.9); opacity: .75; }
-  to { transform: scale(1.12); opacity: 1; }
-}
-
-@keyframes dimensionZoom {
-  0% {
-    transform: scale(.15) rotateX(35deg);
-    opacity: 0;
-  }
-  25% {
-    transform: scale(1) rotateX(0);
-    opacity: 1;
-  }
-  65% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(9);
-    opacity: 0;
-  }
-}
-
-@keyframes mathSymbolWarp {
+@keyframes mathSymbolFly {
   0% {
     opacity: 0;
     transform: translate(0, 0) scale(.2) rotate(0deg);
   }
-  30% { opacity: 1; }
+  35% { opacity: 1; }
   100% {
     opacity: 0;
-    transform:
-      translate(
-        calc(var(--i) * 12px - 70px),
-        calc(var(--i) * -18px - 100px)
-      )
-      scale(4)
-      rotate(180deg);
+    transform: translate(
+      calc((var(--i) - 6) * 12vw),
+      calc((var(--i) - 6) * -10vh)
+    ) scale(2.5) rotate(180deg);
   }
 }
 
-@keyframes dimensionTitle {
-  0%, 15% {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-  35%, 75% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
+@keyframes mathTitleReveal {
+  from { opacity: 0; transform: translateY(25px); letter-spacing: 15px; }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* RESPONSIVE */
+@keyframes mathSubtitleReveal {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 @media (max-width: 600px) {
   .math-entry-portal {
-    width: 185px;
-    height: 185px;
-  }
-
-  .math-entry-core {
-    font-size: 23px;
+    width: 78vw;
   }
 
   .math-entry-animation h1 {
-    font-size: 13px;
-    letter-spacing: 3px;
-    padding: 0 15px;
-  }
-
-  .math-entry-animation p {
-    font-size: 8px;
     letter-spacing: 2px;
   }
 
-  .math-entry-symbols span {
-    font-size: 23px;
+  .math-entry-animation p {
+    letter-spacing: 1.5px;
   }
 
   .math-entry-animation::after {
-    letter-spacing: 4px;
+    letter-spacing: 5px;
   }
 }
 
@@ -3064,6 +2967,7 @@ footer {
   .math-entry-animation *,
   .math-entry-animation::before,
   .math-entry-animation::after {
-    animation-duration: 1.8s !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
