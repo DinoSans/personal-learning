@@ -1145,17 +1145,34 @@ if (!response.ok) {
 
     <div className="math-material-grid">
       <div
-  className="math-material-card"
+  className="math-material-card number-feature-card"
   onClick={() => {
     setSelectedNumber(0)
     setActive('Mengenal Angka')
   }}
-  style={{ cursor: 'pointer' }}
 >
-        <span className="subject-kicker">MATERI 01</span>
-        <h2>Mengenal Angka</h2>
-        <p>Mengenal angka dan memahami dasar bilangan.</p>
-      </div>
+  <div className="number-card-image">
+    <img
+      src="/images/mengenal-angka.png"
+      alt="Ilustrasi belajar mengenal angka"
+    />
+
+    <span className="number-image-badge">
+      MATERI 01
+    </span>
+
+    <div className="number-image-overlay">
+      <span>INTERACTIVE LEARNING</span>
+      <h2>Mengenal Angka</h2>
+      <p>Mulai petualangan angka 0–10!</p>
+    </div>
+  </div>
+
+  <div className="number-feature-footer">
+    <span>EXPLORE LESSON</span>
+    <span>↗</span>
+  </div>
+</div>
 
       <div className="math-material-card">
         <span className="material-number">02</span>

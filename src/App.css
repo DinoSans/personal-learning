@@ -2555,3 +2555,111 @@ footer {
     font-size: 75px;
   }
 }
+/* MENGENAL ANGKA FEATURE CARD */
+
+.number-feature-card {
+  padding: 0 !important;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  border: 1px solid rgba(55, 190, 255, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.number-feature-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 12px 35px rgba(0, 153, 255, 0.25);
+  border-color: #38cfff;
+}
+
+.number-card-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #06152f;
+}
+
+.number-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.number-feature-card:hover .number-card-image img {
+  transform: scale(1.06);
+}
+
+.number-image-badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 7px 12px;
+  border: 1px solid rgba(75, 210, 255, 0.7);
+  border-radius: 8px;
+  background: rgba(3, 20, 50, 0.8);
+  color: #65ddff;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+}
+
+.number-image-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 22px;
+  background: linear-gradient(
+    transparent 25%,
+    rgba(3, 12, 32, 0.35) 55%,
+    rgba(3, 12, 32, 0.97) 100%
+  );
+}
+
+.number-image-overlay > span {
+  color: #52d9ff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.number-image-overlay h2 {
+  color: white;
+  font-size: 25px;
+  margin: 7px 0;
+}
+
+.number-image-overlay p {
+  color: #c5d9f2;
+  font-size: 13px;
+  margin: 0;
+}
+
+.number-feature-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  color: #62dfff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.number-feature-footer span:last-child {
+  font-size: 22px;
+}
+
+@media (max-width: 600px) {
+  .number-image-overlay h2 {
+    font-size: 20px;
+  }
+
+  .number-image-overlay {
+    padding: 15px;
+  }
+}
