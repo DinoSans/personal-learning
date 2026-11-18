@@ -2324,3 +2324,20 @@ footer {
   background: linear-gradient(145deg, #101f35, #091525);
   animation: learningEnter 0.4s ease both;
 }
+.math-back-button {
+  padding: 12px 20px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.08);
+  color: #7dd3fc;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.math-back-button:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+}

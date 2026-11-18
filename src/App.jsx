@@ -663,6 +663,12 @@ async function takePhoto() {
   }
 }
   const [active, setActive] = useState('Dashboard')
+  const [previousPage, setPreviousPage] = useState('Dashboard')
+
+const openMatematika = () => {
+  setPreviousPage(active)
+  setActive('Matematika')
+}
   useEffect(() => {
   if (active === 'Admin' && user?.role === 'admin') {
     fetchAdminUsers()
@@ -1123,6 +1129,12 @@ if (!response.ok) {
 )}
 {active === 'Matematika' && (
   <section className="math-page">
+    <button
+      className="math-back-button"
+      onClick={() => setActive(previousPage)}
+    >
+      ← KEMBALI
+    </button>
   </section>
 )}
 {active === 'Belajar' && (
@@ -1163,7 +1175,7 @@ if (!response.ok) {
     <div className="subject-grid">
       <div
   className="subject-card math-card"
-  onClick={() => setActive('Matematika')}
+  onClick={openMatematika}
 >
         <div className="subject-card-top">
           <span className="subject-number">01</span>
