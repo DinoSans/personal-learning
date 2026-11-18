@@ -5,6 +5,59 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import './App.css'
+const DB_NAME = 'itb-quest-db'
+const STORE_NAME = 'progress'
+
+function openProgressDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1)
+
+    request.onupgradeneeded = () => {
+      const db = request.result
+
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME)
+      }
+    }
+
+    request.onsuccess = () => resolve(request.result)
+    request.onerror = () => reject(request.error)
+  })
+}
+
+async function saveLocalProgress(userId, progress) {
+  const db = await openProgressDB()
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readwrite')
+
+    transaction.objectStore(STORE_NAME).put(progress, userId)
+
+    transaction.oncomplete = () => {
+      db.close()
+      resolve(true)
+    }
+
+    transaction.onerror = () => {
+      db.close()
+      reject(transaction.error)
+    }
+  })
+}
+
+async function loadLocalProgress(userId) {
+  const db = await openProgressDB()
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readonly')
+    const request = transaction.objectStore(STORE_NAME).get(userId)
+
+    request.onsuccess = () => resolve(request.result || null)
+    request.onerror = () => reject(request.error)
+
+    transaction.oncomplete = () => db.close()
+  })
+}
 
 function normalizeLatex(text = '') {
   return text
@@ -16,6 +69,180 @@ function normalizeLatex(text = '') {
       (_, f) => `$${f}$`);
 }
 function App() {
+  const [user, setUser] = useState(null)
+  const [authChecking, setAuthChecking] = useState(true)
+  const [progress, setProgress] = useState({
+  xp: 0,
+  level: 1,
+  streak: 0,
+  completed_lessons: [],
+  completed_missions: [],
+  quiz_results: []
+})
+
+const [progressLoading, setProgressLoading] = useState(true)
+const [syncStatus, setSyncStatus] = useState('local')
+const [progressLoadedFor, setProgressLoadedFor] = useState(null)
+useEffect(() => {
+  let cancelled = false
+
+  async function initializeProgress() {
+    if (!user?.id) {
+      setProgressLoading(false)
+      return
+    }
+
+    setProgressLoading(true)
+    setProgressLoadedFor(null)
+
+    try {
+      const savedProgress = await loadLocalProgress(user.id)
+
+      if (savedProgress && !cancelled) {
+        setProgress(savedProgress)
+      } else if (!cancelled) {
+        setProgress({
+          xp: 0,
+          level: 1,
+          streak: 0,
+          completed_lessons: [],
+          completed_missions: [],
+          quiz_results: []
+        })
+      }
+      setProgressLoadedFor(user.id)
+    } catch (error) {
+      setProgressLoadedFor(user.id)
+      console.error('Gagal membaca progress:', error)
+    } finally {
+      if (!cancelled) {
+        setProgressLoading(false)
+      }
+    }
+  }
+
+  initializeProgress()
+
+  return () => {
+    cancelled = true
+  }
+}, [user?.id])
+useEffect(() => {
+  if (
+  !user?.id ||
+  progressLoading ||
+  progressLoadedFor !== user.id
+) return
+
+  async function saveProgress() {
+    try {
+      await saveLocalProgress(user.id, progress)
+      setSyncStatus('local')
+    } catch (error) {
+      console.error('Gagal menyimpan progress:', error)
+    }
+  }
+
+  saveProgress()
+}, [progress, progressLoading, progressLoadedFor, user?.id])
+// AUTHENTICATION STATES
+const [authMode, setAuthMode] = useState('login')
+const [authEmail, setAuthEmail] = useState('')
+const [authPassword, setAuthPassword] = useState('')
+const [showPassword, setShowPassword] = useState(false)
+const [authLoading, setAuthLoading] = useState(false)
+const [authError, setAuthError] = useState('')
+
+// CHECK LOGIN SESSION
+useEffect(() => {
+  let cancelled = false
+
+  async function checkSession() {
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+          action: 'session'
+        })
+      })
+
+      const data = await response.json()
+
+      if (!cancelled && response.ok && data.success) {
+        setUser(data.user)
+      }
+    } catch (error) {
+      console.error('Gagal memeriksa sesi:', error)
+    } finally {
+      if (!cancelled) {
+        setAuthChecking(false)
+      }
+    }
+  }
+
+  checkSession()
+
+  return () => {
+    cancelled = true
+  }
+}, [])
+async function handleAuth(event) {
+  event.preventDefault()
+
+  setAuthError('')
+  setAuthLoading(true)
+
+  try {
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        action: authMode === 'register' ? 'register' : 'login',
+        email: authEmail,
+        password: authPassword
+      })
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Autentikasi gagal.')
+    }
+
+    setUser(data.user)
+    setAuthPassword('')
+  } catch (error) {
+    setAuthError(error.message || 'Terjadi kesalahan.')
+  } finally {
+    setAuthLoading(false)
+  }
+}
+
+async function handleLogout() {
+  try {
+    await fetch('/api/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        action: 'logout'
+      })
+    })
+  } finally {
+    setUser(null)
+    setAuthEmail('')
+    setAuthPassword('')
+  }
+}
   const [photo, setPhoto] = useState(() => {
   return localStorage.getItem('itbQuestProfilePhoto')
 })
@@ -294,6 +521,116 @@ async function sendMessage(event) {
     { icon: '🔥', label: 'STREAK', value: '0 Hari', note: 'Bangun konsistensi' },
   ]
 
+    if (authChecking) {
+    return (
+      <div className="auth-screen">
+        <h1>ITB <span>QUEST</span></h1>
+        <p>Memeriksa sesi Explorer...</p>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="auth-screen">
+        <div className="auth-card">
+          <div className="auth-logo">IQ</div>
+
+          <span className="section-kicker">
+            YOUR FUTURE STARTS HERE
+          </span>
+
+          <h1>
+            {authMode === 'login' ? 'WELCOME BACK.' : 'JOIN THE QUEST.'}
+          </h1>
+
+          <p>
+            {authMode === 'login'
+              ? 'Masuk untuk melanjutkan perjalananmu.'
+              : 'Buat akun dan mulai perjalanan menjadi future engineer.'}
+          </p>
+
+          <form onSubmit={handleAuth}>
+            <label>Email</label>
+            <input
+              type="email"
+              value={authEmail}
+              onChange={(e) => setAuthEmail(e.target.value)}
+              placeholder="Masukkan email"
+              required
+            />
+
+            <label>Password</label>
+            <div className="password-wrapper">
+  <input
+    type={showPassword ? 'text' : 'password'}
+    value={authPassword}
+    onChange={(e) => setAuthPassword(e.target.value)}
+    placeholder="Minimal 10 karakter"
+    minLength={10}
+    maxLength={128}
+    required
+  />
+
+  <button
+  type="button"
+  className="password-toggle"
+  onClick={() => setShowPassword(!showPassword)}
+  aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+>
+  {showPassword ? (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M3 3L21 21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M10.6 10.6A2 2 0 0013.4 13.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M9.9 5.2A10.8 10.8 0 0112 5c5.5 0 9 7 9 7a15 15 0 01-3.1 3.9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M6.2 6.2C3.9 7.8 3 12 3 12s3.5 7 9 7c1.2 0 2.3-.3 3.3-.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M3 12s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8"/>
+    </svg>
+  )}
+</button>
+</div>
+
+            {authError && (
+              <p className="auth-error">{authError}</p>
+            )}
+
+            <button
+              type="submit"
+              className="auth-submit"
+              disabled={authLoading}
+            >
+              {authLoading
+                ? 'PLEASE WAIT...'
+                : authMode === 'login'
+                  ? 'LOGIN →'
+                  : 'CREATE ACCOUNT →'}
+            </button>
+          </form>
+
+          <div className="auth-switch">
+            {authMode === 'login'
+              ? "Belum punya akun?"
+              : 'Sudah punya akun?'}
+
+            <button
+              type="button"
+              onClick={() => {
+                setAuthMode(authMode === 'login' ? 'register' : 'login')
+                setAuthError('')
+              }}
+            >
+              {authMode === 'login' ? 'Register' : 'Login'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
       <aside className="sidebar">
@@ -339,9 +676,9 @@ async function sendMessage(event) {
           </div>
           <div className="profile">
             <div className="profile-info">
-              <strong>Explorer</strong>
-              <span>Future Engineer</span>
-            </div>
+  <strong>{user?.email?.split('@')[0] || 'Explorer'}</strong>
+  <span>Future Engineer</span>
+</div>
             <button
   className="avatar"
   onClick={() => setShowProfile(true)}
@@ -352,6 +689,12 @@ async function sendMessage(event) {
   ) : (
     'S'
   )}
+</button>
+<button
+  className="logout-btn"
+  onClick={handleLogout}
+>
+  LOGOUT
 </button>
           </div>
         </header>

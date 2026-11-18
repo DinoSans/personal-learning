@@ -1,6 +1,13 @@
 
-const ALLOWED_ORIGIN =
-  "https://personal-learning-delta.vercel.app";
+const ALLOWED_ORIGINS = [
+  "https://personal-learning-delta.vercel.app",
+  ...(process.env.NODE_ENV !== "production"
+    ? [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000"
+      ]
+    : [])
+];
 
 const COOKIE_NAME = "itb_session";
 const COOKIE_AGE = 7 * 24 * 60 * 60;
@@ -39,7 +46,7 @@ export default async function handler(req, res) {
     });
   }
 
-  if (req.headers.origin !== ALLOWED_ORIGIN) {
+  if (!ALLOWED_ORIGINS.includes(req.headers.origin)) {
     return res.status(403).json({
       error: "Origin tidak diizinkan."
     });
@@ -48,6 +55,11 @@ export default async function handler(req, res) {
   const authUrl = process.env.AUTH_API_URL;
   const authSecret = process.env.AUTH_API_SECRET;
 
+console.log("AUTH CONFIG CHECK:", {
+  urlExists: Boolean(authUrl),
+  secretExists: Boolean(authSecret),
+  nodeEnv: process.env.NODE_ENV
+});
   if (!authUrl || !authSecret) {
     return res.status(500).json({
       error: "Konfigurasi autentikasi belum lengkap."
@@ -111,6 +123,11 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
+    console.log("AUTH WORKER RESPONSE:", {
+  status: response.status,
+  success: data.success,
+  error: data.error || null
+});
 
     if (!response.ok) {
       if (
