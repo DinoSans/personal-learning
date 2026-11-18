@@ -69,9 +69,9 @@ export default async function handler(req, res) {
           "Authorization": `Bearer ${authSecret}`
         },
         body: JSON.stringify({
-          sessionToken,
-          ...(req.method === "POST" ? req.body : {})
-        }),
+  ...(req.method === "POST" ? req.body : {}),
+  sessionToken
+}),
         signal: AbortSignal.timeout(15000)
       }
     );
