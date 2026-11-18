@@ -991,7 +991,7 @@ if (!response.ok) {
           </div>
         </header>
 
-        <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''} ${active === 'Belajar' ? 'learning-active' : ''}`}>
+        <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''} ${active === 'Belajar' ? 'learning-active' : ''} ${active === 'Matematika' ? 'math-active' : ''}`}>
           {active === 'Admin' && user?.role === 'admin' && (
   <section className="admin-page">
     <div className="admin-heading">
@@ -1121,6 +1121,10 @@ if (!response.ok) {
     </div>
   </section>
 )}
+{active === 'Matematika' && (
+  <section className="math-page">
+  </section>
+)}
 {active === 'Belajar' && (
   <section className="learning-page">
     <div className="learning-hero">
@@ -1157,7 +1161,10 @@ if (!response.ok) {
     </div>
 
     <div className="subject-grid">
-      <div className="subject-card math-card">
+      <div
+  className="subject-card math-card"
+  onClick={() => setActive('Matematika')}
+>
         <div className="subject-card-top">
           <span className="subject-number">01</span>
           <span className="subject-category">LOGIC & NUMBERS</span>
