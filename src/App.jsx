@@ -663,7 +663,8 @@ async function takePhoto() {
   }
 }
   const [active, setActive] = useState('Dashboard')
-  const [previousPage, setPreviousPage] = useState('Dashboard')
+const [previousPage, setPreviousPage] = useState('Dashboard')
+const [selectedNumber, setSelectedNumber] = useState(0)
 
 const openMatematika = () => {
   setPreviousPage(active)
@@ -1143,9 +1144,14 @@ if (!response.ok) {
     </div>
 
     <div className="math-material-grid">
-      <div className="math-material-card">
-        <span className="material-number">01</span>
-        <div className="material-icon">🔢</div>
+      <div
+  className="math-material-card"
+  onClick={() => {
+    setSelectedNumber(0)
+    setActive('Mengenal Angka')
+  }}
+  style={{ cursor: 'pointer' }}
+>
         <span className="subject-kicker">MATERI 01</span>
         <h2>Mengenal Angka</h2>
         <p>Mengenal angka dan memahami dasar bilangan.</p>
@@ -1166,6 +1172,67 @@ if (!response.ok) {
           <span>🔒</span>
         </div>
       </div>
+    </div>
+  </section>
+)}
+{active === 'Mengenal Angka' && (
+  <section className="number-learning-page">
+    <button
+      className="math-back-button"
+      onClick={() => setActive('Matematika')}
+    >
+      ← KEMBALI
+    </button>
+
+    <div className="number-learning-header">
+      <span className="subject-kicker">MATEMATIKA • MATERI 01</span>
+      <h1>Mengenal Angka</h1>
+      <p>Yuk, kenali angka dari nol sampai sepuluh!</p>
+    </div>
+
+    <div className="number-display">
+      <span>ANGKA YANG KAMU PILIH</span>
+      <h2>{selectedNumber}</h2>
+      <h3>
+        {[
+          'Nol', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima',
+          'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh'
+        ][selectedNumber]}
+      </h3>
+    </div>
+
+    <h2 className="number-grid-title">PILIH ANGKA</h2>
+
+    <div className="number-grid">
+      {[
+        'Nol', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima',
+        'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh'
+      ].map((name, index) => (
+        <button
+          key={index}
+          className={`number-card ${selectedNumber === index ? 'selected' : ''}`}
+          onClick={() => setSelectedNumber(index)}
+        >
+          <strong>{index}</strong>
+          <span>{name}</span>
+        </button>
+      ))}
+    </div>
+
+    <div className="number-navigation">
+      <button
+        disabled={selectedNumber === 0}
+        onClick={() => setSelectedNumber(n => n - 1)}
+      >
+        ← Sebelumnya
+      </button>
+
+      <button
+        disabled={selectedNumber === 10}
+        onClick={() => setSelectedNumber(n => n + 1)}
+      >
+        Selanjutnya →
+      </button>
     </div>
   </section>
 )}
