@@ -666,6 +666,18 @@ async function takePhoto() {
 const [previousPage, setPreviousPage] = useState('Dashboard')
 const [selectedNumber, setSelectedNumber] = useState(0)
 const [enteringMath, setEnteringMath] = useState(false)
+const [enteringPlaceValue, setEnteringPlaceValue] = useState(false)
+
+const enterPlaceValue = () => {
+  if (enteringPlaceValue) return
+
+  setEnteringPlaceValue(true)
+
+  setTimeout(() => {
+    setActive('Nilai Tempat')
+    setEnteringPlaceValue(false)
+  }, 2400)
+}
 
 const openMatematika = () => {
   setPreviousPage(active)
@@ -1185,7 +1197,7 @@ if (!response.ok) {
 
       <div
   className="math-material-card number-feature-card"
-  onClick={() => setActive('Nilai Tempat')}
+  onClick={enterPlaceValue}
   style={{ cursor: 'pointer' }}
 >
   <div className="number-card-image">
@@ -1906,6 +1918,56 @@ if (!response.ok) {
 
     <h1>ENTERING MATHEMATICS</h1>
     <p>PREPARING YOUR LEARNING JOURNEY...</p>
+  </div>
+)}
+{enteringPlaceValue && (
+  <div className="place-entry-animation">
+    <div className="place-entry-grid"></div>
+    <div className="place-entry-flash"></div>
+
+    <div className="place-entry-particles">
+      {['1', '2', '3', '4', '+', '100', '10', '1000', '01', '02', '03', '04'].map((item, i) => (
+        <span key={i} style={{ '--i': i }}>
+          {item}
+        </span>
+      ))}
+    </div>
+
+    <div className="place-entry-title">
+      <span>ITB QUEST · MATHEMATICS</span>
+      <h1>PLACE VALUE</h1>
+      <p>UNLOCKING THE POWER OF NUMBERS</p>
+    </div>
+
+    <div className="place-entry-portal">
+      <div className="place-entry-ring place-ring-one"></div>
+      <div className="place-entry-ring place-ring-two"></div>
+      <div className="place-entry-ring place-ring-three"></div>
+
+      <div className="place-entry-orbit">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+      </div>
+
+      <div className="place-entry-core">
+        <div className="place-entry-columns">
+          <div><strong>1</strong><small>RIBUAN</small></div>
+          <div><strong>2</strong><small>RATUSAN</small></div>
+          <div><strong>3</strong><small>PULUHAN</small></div>
+          <div><strong>4</strong><small>SATUAN</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div className="place-entry-bottom">
+      <span>INITIALIZING LEARNING DIMENSION</span>
+      <div className="place-entry-progress">
+        <div></div>
+      </div>
+      <small>PREPARING YOUR MATHEMATICAL JOURNEY...</small>
+    </div>
   </div>
 )}
     </div>
