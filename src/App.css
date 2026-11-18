@@ -2663,3 +2663,150 @@ footer {
     padding: 15px;
   }
 }
+/* ===== MATH PORTAL TRANSITION ===== */
+
+.math-entry-animation {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: #020817;
+  animation: mathScreenIn 1.8s ease forwards;
+}
+
+.math-entry-glow {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: #087dff;
+  filter: blur(130px);
+  opacity: 0.45;
+  animation: mathGlow 1.8s ease-in-out infinite alternate;
+}
+
+.math-entry-portal {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 800px;
+  animation: portalZoom 1.8s ease-in forwards;
+}
+
+.math-entry-ring {
+  position: absolute;
+  inset: 0;
+  border: 3px solid #38cfff;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #008cff, inset 0 0 20px #008cff;
+}
+
+.ring-one {
+  animation: ringRotate 3s linear infinite;
+}
+
+.ring-two {
+  inset: 18px;
+  border-color: #ffffff;
+  animation: ringRotate 2s linear infinite reverse;
+}
+
+.ring-three {
+  inset: 36px;
+  border-color: #168cff;
+  animation: ringRotate 1.5s linear infinite;
+}
+
+.math-entry-core {
+  color: white;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  text-shadow: 0 0 20px #32caff;
+}
+
+.math-entry-animation h1 {
+  z-index: 2;
+  margin-top: 45px;
+  color: #65dfff;
+  font-size: 18px;
+  letter-spacing: 5px;
+  text-align: center;
+}
+
+.math-entry-animation p {
+  z-index: 2;
+  color: #9bbbdc;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+.math-entry-symbols span {
+  position: absolute;
+  left: calc(50% + (var(--i) * 29px - 160px));
+  top: calc(50% + (var(--i) * 17px - 90px));
+  color: #65dfff;
+  font-size: 30px;
+  font-weight: bold;
+  text-shadow: 0 0 15px #008cff;
+  animation: symbolFly 1.8s ease-in forwards;
+  animation-delay: calc(var(--i) * 0.025s);
+}
+
+@keyframes mathScreenIn {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@keyframes mathGlow {
+  from { transform: scale(0.8); opacity: 0.25; }
+  to { transform: scale(1.4); opacity: 0.65; }
+}
+
+@keyframes ringRotate {
+  from { transform: rotate(0deg) scaleX(1); }
+  to { transform: rotate(360deg) scaleX(1); }
+}
+
+@keyframes portalZoom {
+  0% { transform: scale(0.3); opacity: 0; }
+  35% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(7); opacity: 0; }
+}
+
+@keyframes symbolFly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3);
+  }
+  35% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(
+      calc(var(--i) * 12px - 70px),
+      calc(var(--i) * -18px - 100px)
+    ) scale(3);
+  }
+}
+
+@media (max-width: 600px) {
+  .math-entry-animation h1 {
+    font-size: 13px;
+    letter-spacing: 3px;
+  }
+
+  .math-entry-portal {
+    width: 170px;
+    height: 170px;
+  }
+}

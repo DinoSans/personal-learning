@@ -665,10 +665,22 @@ async function takePhoto() {
   const [active, setActive] = useState('Dashboard')
 const [previousPage, setPreviousPage] = useState('Dashboard')
 const [selectedNumber, setSelectedNumber] = useState(0)
+const [enteringMath, setEnteringMath] = useState(false)
 
 const openMatematika = () => {
   setPreviousPage(active)
   setActive('Matematika')
+}
+const enterNumberLearning = () => {
+  if (enteringMath) return
+
+  setSelectedNumber(0)
+  setEnteringMath(true)
+
+  setTimeout(() => {
+    setActive('Mengenal Angka')
+    setEnteringMath(false)
+  }, 1800)
 }
   useEffect(() => {
   if (active === 'Admin' && user?.role === 'admin') {
@@ -1146,10 +1158,7 @@ if (!response.ok) {
     <div className="math-material-grid">
       <div
   className="math-material-card number-feature-card"
-  onClick={() => {
-    setSelectedNumber(0)
-    setActive('Mengenal Angka')
-  }}
+  onClick={enterNumberLearning}
 >
   <div className="number-card-image">
     <img
@@ -1783,6 +1792,34 @@ if (!response.ok) {
 <canvas ref={canvasRef} hidden />
     </div>
   )
+  {enteringMath && (
+  <div className="math-entry-animation">
+    <div className="math-entry-glow"></div>
+
+    <div className="math-entry-symbols">
+      {['+', '−', '×', '÷', 'π', '√', '=', '∞', '1', '2', '3', '0'].map((symbol, i) => (
+        <span
+          key={i}
+          style={{
+            '--i': i
+          }}
+        >
+          {symbol}
+        </span>
+      ))}
+    </div>
+
+    <div className="math-entry-portal">
+      <div className="math-entry-ring ring-one"></div>
+      <div className="math-entry-ring ring-two"></div>
+      <div className="math-entry-ring ring-three"></div>
+      <div className="math-entry-core">MATH</div>
+    </div>
+
+    <h1>ENTERING MATHEMATICS</h1>
+    <p>PREPARING YOUR LEARNING JOURNEY...</p>
+  </div>
+)}
 }
 
 export default App
