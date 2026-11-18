@@ -1183,17 +1183,33 @@ if (!response.ok) {
   </div>
 </div>
 
-      <div className="math-material-card">
-        <span className="material-number">02</span>
-        <div className="material-icon">📊</div>
-        <span className="subject-kicker">MATERI 02</span>
-        <h2>Mengetahui Nilai Tempat</h2>
-        <p>Memahami satuan, puluhan, ratusan, dan ribuan.</p>
-        <div className="material-footer">
-          <span>SEGERA HADIR</span>
-          <span>🔒</span>
-        </div>
-      </div>
+      <div
+  className="math-material-card number-feature-card"
+  onClick={() => setActive('Nilai Tempat')}
+  style={{ cursor: 'pointer' }}
+>
+  <div className="number-card-image">
+    <img
+      src="/images/nilai-tempat.png"
+      alt="Ilustrasi belajar nilai tempat"
+    />
+
+    <span className="number-image-badge">
+      MATERI 02
+    </span>
+
+    <div className="number-image-overlay">
+      <span>INTERACTIVE LEARNING</span>
+      <h2>Mengetahui Nilai Tempat</h2>
+      <p>Kenali satuan, puluhan, ratusan, dan ribuan!</p>
+    </div>
+  </div>
+
+  <div className="number-feature-footer">
+    <span>EXPLORE LESSON</span>
+    <span>↗</span>
+  </div>
+</div>
     </div>
   </section>
 )}
@@ -1255,6 +1271,85 @@ if (!response.ok) {
       >
         Selanjutnya →
       </button>
+    </div>
+  </section>
+)}
+{active === 'Nilai Tempat' && (
+  <section className="number-learning-page place-value-page">
+    <button
+      className="math-back-button"
+      onClick={() => setActive('Matematika')}
+    >
+      ← KEMBALI
+    </button>
+
+    <div className="number-learning-header">
+      <span className="subject-kicker">MATERI 02 · MATEMATIKA</span>
+      <h1>Mengetahui Nilai Tempat</h1>
+      <p>
+        Yuk, pelajari nilai setiap angka berdasarkan posisinya!
+      </p>
+    </div>
+
+    <div className="place-value-hero">
+      <div className="place-value-intro">
+        <span className="subject-kicker">KENALI ANGKANYA</span>
+        <h2>Setiap angka punya tempat!</h2>
+        <p>
+          Dalam sebuah bilangan, posisi angka menentukan nilainya.
+          Perhatikan contoh bilangan di bawah ini.
+        </p>
+      </div>
+
+      <div className="place-value-number">
+        {[
+          { digit: '1', name: 'Ribuan', value: '1.000' },
+          { digit: '2', name: 'Ratusan', value: '200' },
+          { digit: '3', name: 'Puluhan', value: '30' },
+          { digit: '4', name: 'Satuan', value: '4' }
+        ].map((item, index) => (
+          <div className="place-value-digit" key={item.name}>
+            <strong>{item.digit}</strong>
+            <span>{item.name}</span>
+            <small>{item.value}</small>
+          </div>
+        ))}
+      </div>
+
+      <div className="place-value-total">
+        <span>JADI, NILAI BILANGAN 1.234 ADALAH</span>
+        <strong>1.000 + 200 + 30 + 4</strong>
+      </div>
+    </div>
+
+    <div className="place-value-grid">
+      <div className="place-value-card">
+        <span>01</span>
+        <h3>Satuan</h3>
+        <strong>4</strong>
+        <p>Posisi paling kanan. Contoh: angka 4 bernilai 4.</p>
+      </div>
+
+      <div className="place-value-card">
+        <span>02</span>
+        <h3>Puluhan</h3>
+        <strong>30</strong>
+        <p>Posisi kedua dari kanan. Contoh: angka 3 bernilai 30.</p>
+      </div>
+
+      <div className="place-value-card">
+        <span>03</span>
+        <h3>Ratusan</h3>
+        <strong>200</strong>
+        <p>Posisi ketiga dari kanan. Contoh: angka 2 bernilai 200.</p>
+      </div>
+
+      <div className="place-value-card">
+        <span>04</span>
+        <h3>Ribuan</h3>
+        <strong>1.000</strong>
+        <p>Posisi keempat dari kanan. Contoh: angka 1 bernilai 1.000.</p>
+      </div>
     </div>
   </section>
 )}

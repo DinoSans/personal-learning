@@ -2971,3 +2971,147 @@ footer {
     animation-iteration-count: 1 !important;
   }
 }
+/* ===== MATERI 02: NILAI TEMPAT ===== */
+
+.place-value-page {
+  animation: numberPageEnter 0.6s ease both;
+}
+
+.place-value-header {
+  margin-bottom: 28px;
+}
+
+.place-value-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+  margin: 24px 0;
+  border: 1px solid rgba(50, 160, 255, 0.3);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(0, 145, 255, 0.2), transparent 35%),
+    linear-gradient(135deg, #101f3c, #071225);
+  box-shadow: 0 0 35px rgba(0, 115, 255, 0.12);
+}
+
+.place-value-intro h2 {
+  margin: 12px 0;
+  color: #eaf5ff;
+  font-size: clamp(22px, 4vw, 32px);
+}
+
+.place-value-intro p {
+  color: #a8bad3;
+  line-height: 1.7;
+}
+
+.place-value-number {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.place-value-digit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 20px 8px;
+  border: 1px solid rgba(72, 165, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(30, 90, 155, 0.18);
+}
+
+.place-value-digit strong {
+  color: #61bdff;
+  font-size: clamp(30px, 5vw, 48px);
+  text-shadow: 0 0 18px rgba(55, 165, 255, 0.5);
+}
+
+.place-value-digit span {
+  color: #e8f4ff;
+  font-weight: 700;
+}
+
+.place-value-digit small {
+  color: #8da9c9;
+}
+
+.place-value-total {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(0, 145, 255, 0.1);
+  text-align: center;
+}
+
+.place-value-total span {
+  color: #8fb8df;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+.place-value-total strong {
+  color: #73c7ff;
+  font-size: clamp(17px, 3vw, 25px);
+}
+
+.place-value-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.place-value-card {
+  position: relative;
+  padding: 22px;
+  border: 1px solid rgba(74, 153, 230, 0.22);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #101f38, #0a1427);
+}
+
+.place-value-card > span {
+  color: #559edc;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.place-value-card h3 {
+  margin: 12px 0;
+  color: #eaf5ff;
+  font-size: 20px;
+}
+
+.place-value-card strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #65bdff;
+  font-size: 32px;
+  text-shadow: 0 0 16px rgba(65, 165, 255, 0.3);
+}
+
+.place-value-card p {
+  margin: 0;
+  color: #9eb2cc;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .place-value-hero {
+    padding: 20px;
+  }
+
+  .place-value-number {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .place-value-grid {
+    grid-template-columns: 1fr;
+  }
+}
