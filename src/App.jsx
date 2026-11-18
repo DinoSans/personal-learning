@@ -1790,20 +1790,13 @@ if (!response.ok) {
   </div>
 )}
 <canvas ref={canvasRef} hidden />
-    </div>
-  )
-  {enteringMath && (
+{enteringMath && (
   <div className="math-entry-animation">
     <div className="math-entry-glow"></div>
 
     <div className="math-entry-symbols">
       {['+', '−', '×', '÷', 'π', '√', '=', '∞', '1', '2', '3', '0'].map((symbol, i) => (
-        <span
-          key={i}
-          style={{
-            '--i': i
-          }}
-        >
+        <span key={i} style={{ '--i': i }}>
           {symbol}
         </span>
       ))}
@@ -1820,6 +1813,8 @@ if (!response.ok) {
     <p>PREPARING YOUR LEARNING JOURNEY...</p>
   </div>
 )}
+    </div>
+  )
 }
 
 export default App
