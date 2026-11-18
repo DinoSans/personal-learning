@@ -575,6 +575,7 @@ const [input, setInput] = useState('')
 const [isLoading, setIsLoading] = useState(false)
 const [isGeneratingImage, setIsGeneratingImage] = useState(false)
 const [chatError, setChatError] = useState('')
+const [quotaModal, setQuotaModal] = useState(null)
 
 
 async function sendMessage(event) {
@@ -620,7 +621,15 @@ async function sendMessage(event) {
 
       const data = await response.json();
 
-      if (!response.ok || !data.success || !data.image) {
+if (response.status === 429 && data.code === 'QUOTA_EXCEEDED') {
+  setQuotaModal({
+    feature: 'image',
+    resetAt: data.resetAt
+  })
+  return
+}
+
+if (!response.ok || !data.success || !data.image) {
         throw new Error(
           data.error || 'Gagal membuat gambar.'
         );
@@ -652,7 +661,15 @@ async function sendMessage(event) {
 
     const data = await response.json();
 
-    if (!response.ok) {
+if (response.status === 429 && data.code === 'QUOTA_EXCEEDED') {
+  setQuotaModal({
+    feature: 'chat',
+    resetAt: data.resetAt
+  })
+  return
+}
+
+if (!response.ok) {
       throw new Error(
         data.error || 'JARVIS sedang mengalami gangguan.'
       );
@@ -1224,6 +1241,58 @@ async function sendMessage(event) {
   </div>
 )}
 
+{quotaModal && (
+  <div className="quota-overlay">
+    <div className="quota-modal">
+      <div className="quota-icon">⚠</div>
+
+      <span className="section-kicker">
+        ITB QUEST SECURITY SYSTEM
+      </span>
+
+      <h2>
+        {quotaModal.feature === 'chat'
+          ? 'CHAT LIMIT REACHED'
+          : 'IMAGE LIMIT REACHED'}
+      </h2>
+
+      <h3>Kuota Harian Habis</h3>
+
+      <p>
+        {quotaModal.feature === 'chat'
+          ? 'Kuota chat JARVIS hari ini sudah mencapai batas.'
+          : 'Kuota generate gambar hari ini sudah mencapai batas.'}
+      </p>
+
+      <div className="quota-reset">
+        <span>KUOTA TERSEDIA KEMBALI</span>
+
+        <strong>
+          {quotaModal.resetAt
+            ? new Date(quotaModal.resetAt).toLocaleTimeString(
+                'id-ID',
+                {
+                  timeZone: 'Asia/Makassar',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                }
+              ).replace(':', '.')
+            : '00.00'} WITA
+        </strong>
+
+        <small>Reset otomatis setiap hari</small>
+      </div>
+
+      <button
+        className="quota-close"
+        onClick={() => setQuotaModal(null)}
+      >
+        MENGERTI
+      </button>
+    </div>
+  </div>
+)}
 <canvas ref={canvasRef} hidden />
     </div>
   )
