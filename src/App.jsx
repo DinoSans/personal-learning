@@ -152,6 +152,9 @@ function normalizeLatex(text = '') {
 function App() {
   const [user, setUser] = useState(null)
   const [authChecking, setAuthChecking] = useState(true)
+  const [adminUsers, setAdminUsers] = useState([])
+const [adminLoading, setAdminLoading] = useState(false)
+const [adminError, setAdminError] = useState('')
   const [progress, setProgress] = useState({
   xp: 0,
   level: 1,
@@ -450,6 +453,33 @@ function handleChatPhoto(event) {
   reader.readAsDataURL(file)
   event.target.value = ''
 }
+const fetchAdminUsers = async () => {
+  setAdminLoading(true)
+  setAdminError('')
+
+  try {
+    const response = await fetch('/api/admin-users', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Gagal mengambil data pengguna.')
+    }
+
+    setAdminUsers(data.users || [])
+  } catch (error) {
+    setAdminError(error.message)
+  } finally {
+    setAdminLoading(false)
+  }
+}
 
 useEffect(() => {
   try {
@@ -564,6 +594,11 @@ function takePhoto() {
   setShowProfile(false)
 }
   const [active, setActive] = useState('Dashboard')
+  useEffect(() => {
+  if (active === 'Admin' && user?.role === 'admin') {
+    fetchAdminUsers()
+  }
+}, [active, user])
   const [messages, setMessages] = useState([
   {
     role: 'assistant',
@@ -696,12 +731,13 @@ if (!response.ok) {
 
 
   const menu = [
-    ['⌂', 'Dashboard'],
-    ['▤', 'Belajar'],
-    ['◈', 'Quiz'],
-    ['✧', 'JARVIS'],
-    ['⚑', 'Misi'],
-  ]
+  ['⌂', 'Dashboard'],
+  ['▤', 'Belajar'],
+  ['◈', 'Quiz'],
+  ['✧', 'JARVIS'],
+  ['⚑', 'Misi'],
+  ...(user?.role === 'admin' ? [['⚙', 'Admin']] : []),
+]
 
   const stats = [
     { icon: '⚡', label: 'TOTAL XP', value: '0', note: 'Mulai petualanganmu' },
@@ -888,6 +924,104 @@ if (!response.ok) {
         </header>
 
         <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''}`}>
+          {active === 'Admin' && user?.role === 'admin' && (
+  <section className="admin-page">
+    <div className="admin-heading">
+      <div>
+        <span className="section-kicker">SYSTEM MANAGEMENT</span>
+        <h1>Admin <span>Dashboard.</span></h1>
+        <p>Pantau akun dan penggunaan ITB QUEST.</p>
+      </div>
+
+      <button
+        className="primary-btn"
+        onClick={fetchAdminUsers}
+        disabled={adminLoading}
+      >
+        {adminLoading ? 'LOADING...' : '↻ REFRESH'}
+      </button>
+    </div>
+
+    {adminError && (
+      <p className="auth-error">{adminError}</p>
+    )}
+
+    <div className="admin-stats">
+      <div className="stat-card">
+        <span>TOTAL USERS</span>
+        <h3>{adminUsers.length}</h3>
+      </div>
+
+      <div className="stat-card">
+        <span>ADMIN ACCOUNTS</span>
+        <h3>{adminUsers.filter(u => u.role === 'admin').length}</h3>
+      </div>
+
+      <div className="stat-card">
+        <span>CHAT USED</span>
+        <h3>{adminUsers.reduce((sum, u) => sum + Number(u.chat_used || 0), 0)}</h3>
+      </div>
+
+      <div className="stat-card">
+        <span>IMAGES USED</span>
+        <h3>{adminUsers.reduce((sum, u) => sum + Number(u.image_used || 0), 0)}</h3>
+      </div>
+    </div>
+
+    <div className="panel admin-table-panel">
+      <div className="panel-heading">
+        <div>
+          <span className="section-kicker">USER DATABASE</span>
+          <h2>Registered Users</h2>
+        </div>
+        <span className="live-label">
+          {adminUsers.length} ACCOUNTS
+        </span>
+      </div>
+
+      {adminLoading ? (
+        <p>Memuat data pengguna...</p>
+      ) : adminUsers.length === 0 ? (
+        <p>Belum ada data pengguna.</p>
+      ) : (
+        <div className="admin-table-wrapper">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Terdaftar</th>
+                <th>Chat</th>
+                <th>Image</th>
+                <th>Sesi Aktif</th>
+              </tr>
+            </thead>
+            <tbody>
+              {adminUsers.map(u => (
+                <tr key={u.id}>
+                  <td>{u.email}</td>
+                  <td>
+                    <span className={`admin-role ${u.role}`}>
+                      {u.role}
+                    </span>
+                  </td>
+                  <td>
+                    {u.created_at
+                      ? new Date(u.created_at).toLocaleDateString('id-ID')
+                      : '-'}
+                  </td>
+                  <td>{u.chat_used ?? 0}/50</td>
+                  <td>{u.image_used ?? 0}/5</td>
+                  <td>{u.active_sessions ?? 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  </section>
+)}
           <section className="welcome">
             <div>
               <div className="eyebrow">

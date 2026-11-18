@@ -1754,3 +1754,128 @@ footer {
     transform: scale(1);
   }
 }
+/* =========================
+   ADMIN DASHBOARD
+========================= */
+
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-bottom: 40px;
+}
+
+.admin-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-heading h1 {
+  font-size: 34px;
+  margin: 10px 0;
+  color: #fff;
+}
+
+.admin-heading h1 span {
+  color: #38bdf8;
+}
+
+.admin-heading p {
+  color: #94a3b8;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-stats .stat-card {
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  background: rgba(15, 30, 50, 0.75);
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.admin-stats .stat-card span {
+  color: #94a3b8;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.admin-stats .stat-card h3 {
+  color: #38bdf8;
+  font-size: 30px;
+  margin: 12px 0 0;
+}
+
+.admin-table-panel {
+  overflow: hidden;
+}
+
+.admin-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  white-space: nowrap;
+}
+
+.admin-table th {
+  color: #38bdf8;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.admin-table td {
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.admin-role {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.admin-role.admin {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.admin-role.user {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+}
+
+@media (max-width: 900px) {
+  .admin-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .admin-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-heading h1 {
+    font-size: 27px;
+  }
+}
