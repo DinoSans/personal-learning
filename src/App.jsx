@@ -680,7 +680,6 @@ const [isLoading, setIsLoading] = useState(false)
 const [isGeneratingImage, setIsGeneratingImage] = useState(false)
 const [chatError, setChatError] = useState('')
 const [quotaModal, setQuotaModal] = useState(null)
-const [showQuotaTest, setShowQuotaTest] = useState(true)
 
 async function sendMessage(event) {
   event.preventDefault();
@@ -1270,23 +1269,6 @@ if (!response.ok) {
       <span className="jarvis-online">● ONLINE</span>
     </div>
 
-    <div className="message-content">
-  <p>TES LATEX INLINE:</p>
-  <ReactMarkdown
-    remarkPlugins={[remarkMath]}
-    rehypePlugins={[rehypeKatex]}
-  >
-    {'$E = mc^2$'}
-  </ReactMarkdown>
-
-  <p>TES LATEX BESAR:</p>
-  <ReactMarkdown
-    remarkPlugins={[remarkMath]}
-    rehypePlugins={[rehypeKatex]}
-  >
-    {'$$\\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$'}
-  </ReactMarkdown>
-</div>
 <div className="chat-messages">
   {messages.map((msg, index) => (
     <div
@@ -1467,28 +1449,6 @@ if (!response.ok) {
   </div>
 )}
 
-{showQuotaTest && (
-  <button
-    onClick={() => setQuotaModal({
-      feature: 'chat',
-      resetAt: new Date().toISOString()
-    })}
-    style={{
-      position: 'fixed',
-      bottom: '100px',
-      right: '20px',
-      zIndex: 99998,
-      padding: '12px 18px',
-      background: '#38bdf8',
-      color: '#06111f',
-      border: 'none',
-      borderRadius: '10px',
-      cursor: 'pointer'
-    }}
-  >
-    TEST POPUP
-  </button>
-)}
 {quotaModal && (
   <div className="quota-overlay">
     <div className="quota-modal">
