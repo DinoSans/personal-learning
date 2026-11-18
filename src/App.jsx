@@ -1135,6 +1135,38 @@ if (!response.ok) {
     >
       ← KEMBALI
     </button>
+
+    <div className="math-header">
+      <span className="section-kicker">MATHEMATICS MODULE</span>
+      <h1>Belajar <span>Matematika.</span></h1>
+      <p>Pilih materi yang ingin kamu pelajari.</p>
+    </div>
+
+    <div className="math-material-grid">
+      <div className="math-material-card">
+        <span className="material-number">01</span>
+        <div className="material-icon">🔢</div>
+        <span className="subject-kicker">MATERI 01</span>
+        <h2>Mengenal Angka</h2>
+        <p>Mengenal angka dan memahami dasar bilangan.</p>
+        <div className="material-footer">
+          <span>SEGERA HADIR</span>
+          <span>🔒</span>
+        </div>
+      </div>
+
+      <div className="math-material-card">
+        <span className="material-number">02</span>
+        <div className="material-icon">📊</div>
+        <span className="subject-kicker">MATERI 02</span>
+        <h2>Mengetahui Nilai Tempat</h2>
+        <p>Memahami satuan, puluhan, ratusan, dan ribuan.</p>
+        <div className="material-footer">
+          <span>SEGERA HADIR</span>
+          <span>🔒</span>
+        </div>
+      </div>
+    </div>
   </section>
 )}
 {active === 'Belajar' && (

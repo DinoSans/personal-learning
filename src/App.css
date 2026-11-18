@@ -2341,3 +2341,83 @@ footer {
   background: rgba(56, 189, 248, 0.2);
   border-color: #38bdf8;
 }
+/* MATHEMATICS MATERIALS */
+
+.math-header {
+  margin: 35px 0 28px;
+}
+
+.math-header h1 {
+  color: #edf7ff;
+  font-size: 32px;
+  margin: 12px 0;
+}
+
+.math-header h1 span {
+  color: #38bdf8;
+}
+
+.math-header p {
+  color: #91a6bd;
+  font-size: 13px;
+}
+
+.math-material-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.math-material-card {
+  position: relative;
+  min-height: 255px;
+  padding: 25px;
+  border-radius: 18px;
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  background: linear-gradient(145deg, #12243a, #091525);
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+}
+
+.material-number {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  color: rgba(56, 189, 248, 0.5);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.material-icon {
+  font-size: 36px;
+  margin: 10px 0 20px;
+}
+
+.math-material-card h2 {
+  color: #edf7ff;
+  font-size: 21px;
+  margin: 9px 0;
+}
+
+.math-material-card p {
+  color: #91a6bd;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.material-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  color: #38bdf8;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 650px) {
+  .math-material-grid {
+    grid-template-columns: 1fr;
+  }
+}
