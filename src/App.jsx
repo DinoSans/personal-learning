@@ -390,8 +390,25 @@ async function handleAuth(event) {
       throw new Error(data.error || 'Autentikasi gagal.')
     }
 
-    setUser(data.user)
-    setAuthPassword('')
+    const sessionResponse = await fetch('/api/auth', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  credentials: 'same-origin',
+  body: JSON.stringify({
+    action: 'session'
+  })
+})
+
+const sessionData = await sessionResponse.json()
+
+if (!sessionResponse.ok || !sessionData.success) {
+  throw new Error('Gagal mengambil data akun.')
+}
+
+setUser(sessionData.user)
+setAuthPassword('')
   } catch (error) {
     setAuthError(error.message || 'Terjadi kesalahan.')
   } finally {
@@ -417,9 +434,12 @@ async function handleLogout() {
     setAuthPassword('')
   }
 }
-  const [photo, setPhoto] = useState(() => {
-  return localStorage.getItem('itbQuestProfilePhoto')
-})
+  const [photo, setPhoto] = useState(null)
+const [photoUploading, setPhotoUploading] = useState(false)
+
+useEffect(() => {
+  setPhoto(user?.profile_photo_url || null)
+}, [user?.id, user?.profile_photo_url])
 const [chatPhoto, setChatPhoto] = useState(null)
 const chatFileRef = useRef(null)
 
@@ -481,18 +501,6 @@ const fetchAdminUsers = async () => {
   }
 }
 
-useEffect(() => {
-  try {
-    if (photo) {
-      localStorage.setItem('itbQuestProfilePhoto', photo)
-    } else {
-      localStorage.removeItem('itbQuestProfilePhoto')
-    }
-  } catch (error) {
-    console.error('Gagal menyimpan foto profil:', error)
-    alert('Penyimpanan penuh. Coba gunakan foto yang lebih kecil.')
-  }
-}, [photo])
 const [showProfile, setShowProfile] = useState(false)
 const [cameraOpen, setCameraOpen] = useState(false)
 const [cameraError, setCameraError] = useState('')
@@ -502,30 +510,80 @@ const videoRef = useRef(null)
 const streamRef = useRef(null)
 const canvasRef = useRef(null)
 
-function uploadPhoto(event) {
-  const file = event.target.files[0]
+async function saveProfilePhoto(imageData) {
+  const response = await fetch('/api/profile-photo', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify({
+      image: imageData
+    })
+  })
+
+  const data = await response.json()
+
+  if (!response.ok || !data.success || !data.url) {
+    throw new Error(data.error || 'Gagal menyimpan foto profil.')
+  }
+
+  setPhoto(data.url)
+
+  setUser(previous => ({
+    ...previous,
+    profile_photo_url: data.url
+  }))
+
+  return data.url
+}
+
+async function uploadPhoto(event) {
+  const file = event.target.files?.[0]
 
   if (!file) return
 
-  if (!file.type.startsWith('image/')) {
-    alert('Pilih file gambar, ya!')
+  const allowedTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+  ]
+
+  if (!allowedTypes.includes(file.type)) {
+    alert('Gunakan gambar JPG, PNG, atau WEBP.')
+    event.target.value = ''
     return
   }
 
-  if (file.size > 5 * 1024 * 1024) {
-    alert('Ukuran foto maksimal 5 MB.')
+  if (file.size > 3 * 1024 * 1024) {
+    alert('Ukuran foto maksimal 3 MB.')
+    event.target.value = ''
     return
   }
+
+  setPhotoUploading(true)
 
   const reader = new FileReader()
 
-  reader.onload = () => {
-    setPhoto(reader.result)
-    setShowProfile(false)
+  reader.onload = async () => {
+    try {
+      await saveProfilePhoto(reader.result)
+      setShowProfile(false)
+    } catch (error) {
+      alert(error.message)
+    } finally {
+      setPhotoUploading(false)
+      event.target.value = ''
+    }
+  }
+
+  reader.onerror = () => {
+    alert('Gagal membaca foto.')
+    setPhotoUploading(false)
+    event.target.value = ''
   }
 
   reader.readAsDataURL(file)
-  event.target.value = ''
 }
 
 function stopCamera() {
@@ -575,7 +633,7 @@ useEffect(() => {
   }
 }, [cameraOpen])
 
-function takePhoto() {
+async function takePhoto() {
   const video = videoRef.current
   const canvas = canvasRef.current
 
@@ -585,13 +643,24 @@ function takePhoto() {
   canvas.height = video.videoHeight
 
   const context = canvas.getContext('2d')
+
   context.translate(canvas.width, 0)
   context.scale(-1, 1)
   context.drawImage(video, 0, 0)
 
-  setPhoto(canvas.toDataURL('image/jpeg', 0.85))
-  stopCamera()
-  setShowProfile(false)
+  const imageData = canvas.toDataURL('image/jpeg', 0.75)
+
+  setPhotoUploading(true)
+
+  try {
+    await saveProfilePhoto(imageData)
+    stopCamera()
+    setShowProfile(false)
+  } catch (error) {
+    alert(error.message)
+  } finally {
+    setPhotoUploading(false)
+  }
 }
   const [active, setActive] = useState('Dashboard')
   useEffect(() => {
@@ -988,18 +1057,49 @@ if (!response.ok) {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Terdaftar</th>
-                <th>Chat</th>
-                <th>Image</th>
-                <th>Sesi Aktif</th>
-              </tr>
+  <th>Foto</th>
+  <th>Email</th>
+  <th>Role</th>
+  <th>Terdaftar</th>
+  <th>Chat</th>
+  <th>Image</th>
+  <th>Sesi Aktif</th>
+</tr>
             </thead>
             <tbody>
               {adminUsers.map(u => (
                 <tr key={u.id}>
-                  <td>{u.email}</td>
+  <td>
+    {u.profile_photo_url ? (
+      <img
+        src={u.profile_photo_url}
+        alt="Foto pengguna"
+        style={{
+          width: '42px',
+          height: '42px',
+          borderRadius: '50%',
+          objectFit: 'cover'
+        }}
+      />
+    ) : (
+      <div
+        style={{
+          width: '42px',
+          height: '42px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#172d46',
+          color: '#38bdf8',
+          fontWeight: 'bold'
+        }}
+      >
+        {u.email?.[0]?.toUpperCase() || '?'}
+      </div>
+    )}
+  </td>
+  <td>{u.email}</td>
                   <td>
                     <span className={`admin-role ${u.role}`}>
                       {u.role}
@@ -1308,11 +1408,12 @@ if (!response.ok) {
       </div>
 
       <button
-        className="profile-action"
-        onClick={() => fileRef.current.click()}
-      >
-        🖼️ Unggah Foto
-      </button>
+  className="profile-action"
+  onClick={() => fileRef.current?.click()}
+  disabled={photoUploading}
+>
+  {photoUploading ? 'MENGUNGGAH...' : '🖼️ Unggah Foto'}
+</button>
 
       <button
         className="profile-action secondary"
@@ -1321,22 +1422,13 @@ if (!response.ok) {
         📷 Ambil Foto
       </button>
 
-      {photo && (
-        <button
-          className="remove-photo"
-          onClick={() => setPhoto(null)}
-        >
-          Hapus foto profil
-        </button>
-      )}
-
       <input
-        ref={fileRef}
-        type="file"
-        accept="image/*"
-        onChange={uploadPhoto}
-        hidden
-      />
+  ref={fileRef}
+  type="file"
+  accept="image/jpeg,image/png,image/webp"
+  onChange={uploadPhoto}
+  hidden
+/>
     </div>
   </div>
 )}
