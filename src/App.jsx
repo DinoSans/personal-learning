@@ -5,6 +5,33 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import './App.css'
+
+const chessBoardRows = [
+  "rnbqkbnr",
+  "pppppppp",
+  "........",
+  "........",
+  "........",
+  "........",
+  "PPPPPPPP",
+  "RNBQKBNR",
+]
+
+const chessPieces = {
+  K: "♔",
+  Q: "♕",
+  R: "♖",
+  B: "♗",
+  N: "♘",
+  P: "♙",
+  k: "♚",
+  q: "♛",
+  r: "♜",
+  b: "♝",
+  n: "♞",
+  p: "♟",
+}
+
 const DB_NAME = 'itb-quest-db'
 const STORE_NAME = 'progress'
 
@@ -149,6 +176,122 @@ function normalizeLatex(text = '') {
     .replace(/(?<!\\)\(([^()\n]*\\[a-zA-Z]+[^()\n]*)\)/g,
       (_, f) => `$${f}$`);
 }
+
+
+function CustomChessPiece({ piece, color }) {
+  const isWhite = color === "white"
+  const glowId = `piece-glow-${piece}-${color}`
+
+  const common = {
+    fill: isWhite ? "#baf8ff" : "#124d91",
+    stroke: isWhite ? "#35eaff" : "#168cff",
+    strokeWidth: 2.5,
+    strokeLinejoin: "round",
+  }
+
+  return (
+    <svg
+      className={`custom-chess-piece ${isWhite ? "piece-white" : "piece-black"}`}
+      viewBox="0 0 100 120"
+      aria-label={`${piece} ${color}`}
+    >
+      <defs>
+        <filter id={glowId} x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      <g {...common} filter={`url(#${glowId})`}>
+
+        {/* KING - RAJA */}
+        {piece === "k" && (
+          <>
+            <path d="M50 8 V29 M39 18 H61" strokeWidth="5" fill="none" />
+            <path d="M28 34 L34 23 L50 31 L66 23 L72 34 L67 58 H33 Z" />
+            <path d="M37 39 L50 48 L63 39 L59 62 H41 Z" />
+            <path d="M34 64 H66 L73 87 H27 Z" />
+            <path d="M21 89 H79 L85 101 H15 Z" />
+            <path d="M12 104 H88 V111 H12 Z" />
+          </>
+        )}
+
+        {/* QUEEN - RATU */}
+        {piece === "q" && (
+          <>
+            <path d="M50 13 L42 34 L24 21 L29 45 L14 34 L25 62 H75 L86 34 L71 45 L76 21 L58 34 Z" />
+            <path d="M35 43 L50 30 L65 43 L61 65 H39 Z" />
+            <path d="M29 68 H71 L77 88 H23 Z" />
+            <path d="M19 90 H81 L87 102 H13 Z" />
+            <path d="M10 105 H90 V112 H10 Z" />
+            <circle cx="24" cy="21" r="4" />
+            <circle cx="50" cy="13" r="4" />
+            <circle cx="76" cy="21" r="4" />
+          </>
+        )}
+
+        {/* ROOK - BENTENG */}
+        {piece === "r" && (
+          <>
+            <path d="M24 17 H39 V29 H46 V17 H60 V29 H68 V17 H82 V43 H76 L72 83 H28 L24 43 H18 V17 Z" />
+            <path d="M31 45 H69 L65 79 H35 Z" />
+            <path d="M26 84 H74 L81 100 H19 Z" />
+            <path d="M12 103 H88 V112 H12 Z" />
+            <path d="M39 49 V74 M50 49 V74 M61 49 V74" fill="none" />
+          </>
+        )}
+
+        {/* BISHOP - GAJAH */}
+        {piece === "b" && (
+          <>
+            <path d="M50 10 L72 39 L66 62 H34 L28 39 Z" />
+            <path d="M50 10 L50 61" fill="none" />
+            <path d="M39 38 L50 26 L61 38" fill="none" />
+            <path d="M34 65 H66 L75 87 H25 Z" />
+            <path d="M20 90 H80 L86 102 H14 Z" />
+            <path d="M10 105 H90 V112 H10 Z" />
+          </>
+        )}
+
+        {/* KNIGHT - KUDA */}
+        {piece === "n" && (
+          <>
+            <path d="M27 83 L23 61 L31 40 L28 23 L44 34 L54 20 L72 35 L81 61 L70 83 Z" />
+            <path d="M44 34 L55 49 L75 54 L67 67 H39 L31 54 Z" />
+            <path d="M53 20 L58 9 L69 28" fill="none" />
+            <path d="M65 43 L72 45" strokeWidth="4" />
+            <circle cx="62" cy="37" r="3" fill={isWhite ? "#ffffff" : "#55dfff"} />
+            <path d="M26 86 H74 L82 101 H18 Z" />
+            <path d="M11 104 H89 V112 H11 Z" />
+          </>
+        )}
+
+        {/* PAWN - PION */}
+        {piece === "p" && (
+          <>
+            <circle cx="50" cy="29" r="15" />
+            <path d="M38 45 L62 45 L69 76 H31 Z" />
+            <path d="M31 79 H69 L77 98 H23 Z" />
+            <path d="M13 102 H87 V112 H13 Z" />
+            <path d="M43 57 H57" fill="none" />
+          </>
+        )}
+      </g>
+
+      <path
+        d="M35 72 H65"
+        stroke={isWhite ? "#ffffff" : "#54c9ff"}
+        strokeWidth="2"
+        opacity=".8"
+      />
+    </svg>
+  )
+}
+
+
 function App() {
   const [user, setUser] = useState(null)
   const [authChecking, setAuthChecking] = useState(true)
@@ -1979,11 +2122,104 @@ if (!response.ok) {
       <p>THE BATTLE OF STRATEGY BEGINS</p>
     </div>
 
-    <div className="chess-coming-soon">
-      <div>♟</div>
+    
+<div className="holo-chess-container">
+  <div className="holo-chess-top">
+    <div>
+      <span className="holo-chess-kicker">ITB QUEST · NEURAL SYSTEM</span>
       <h2>CHESS ARENA</h2>
-      <p>ARENA PERMAINAN SEDANG DIPERSIAPKAN</p>
+      <p>HOLOGRAPHIC STRATEGY INTERFACE</p>
     </div>
+
+    <div className="holo-chess-status">
+      <span></span>
+      SYSTEM ONLINE
+    </div>
+  </div>
+
+  <div className="holo-board-frame">
+    <div className="holo-board-glow"></div>
+
+    <div className="holo-chess-board">
+      {chessBoardRows.map((row, rowIndex) =>
+        row.split("").map((piece, colIndex) => {
+          const isWhite = piece !== "." && piece === piece.toUpperCase()
+
+          return (
+            <div
+              key={`${rowIndex}-${colIndex}`}
+              className={`holo-square ${
+                (rowIndex + colIndex) % 2 === 0
+                  ? "holo-square-light"
+                  : "holo-square-dark"
+              }`}
+            >
+              {colIndex === 0 && (
+                <span className="holo-coordinate holo-rank">
+                  {8 - rowIndex}
+                </span>
+              )}
+
+              {rowIndex === 7 && (
+                <span className="holo-coordinate holo-file">
+                  {"abcdefgh"[colIndex]}
+                </span>
+              )}
+
+              {piece !== "." && (
+                
+
+
+<span
+  className={`holo-piece holo-piece-${piece.toLowerCase()} ${
+    isWhite ? "holo-piece-white" : "holo-piece-black"
+  }`}
+>
+  <CustomChessPiece
+    piece={piece.toLowerCase()}
+    color={isWhite ? "white" : "black"}
+  />
+</span>
+
+
+
+              )}
+            </div>
+          )
+        })
+      )}
+    </div>
+  </div>
+
+  <div className="holo-chess-bottom">
+    <div className="holo-player">
+      <span className="holo-player-icon white-player">♔</span>
+      <div>
+        <strong>WHITE</strong>
+        <small>PLAYER ONE</small>
+      </div>
+    </div>
+
+    <div className="holo-center-label">
+      <span>VS</span>
+      <small>NEURAL BATTLEFIELD</small>
+    </div>
+
+    <div className="holo-player">
+      <span className="holo-player-icon black-player">♚</span>
+      <div>
+        <strong>BLACK</strong>
+        <small>PLAYER TWO</small>
+      </div>
+    </div>
+  </div>
+
+  <div className="holo-chess-footer">
+    <span>64 HOLOGRAPHIC CELLS</span>
+    <span>CHESS ENGINE · INITIALIZING</span>
+  </div>
+</div>
+
   </section>
 )}
           <section className="welcome">

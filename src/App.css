@@ -4717,3 +4717,434 @@ footer {
     padding: 18px;
   }
 }
+
+/* =================================
+   ITB QUEST - HOLOGRAPHIC CHESS
+================================= */
+
+.holo-chess-container {
+  width: 100%;
+  max-width: 850px;
+  margin: 35px auto;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 195, 255, 0.3);
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(0, 130, 255, 0.13), transparent 65%),
+    linear-gradient(145deg, #07182d, #020813 75%);
+  box-shadow:
+    0 0 35px rgba(0, 153, 255, 0.12),
+    inset 0 0 35px rgba(0, 153, 255, 0.06);
+}
+
+.holo-chess-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.holo-chess-kicker {
+  color: #00c8ff;
+  font-size: 10px;
+  letter-spacing: 3px;
+  font-weight: 700;
+}
+
+.holo-chess-top h2 {
+  color: #e8f8ff;
+  font-size: clamp(23px, 4vw, 34px);
+  letter-spacing: 4px;
+  margin: 9px 0;
+  text-shadow: 0 0 18px rgba(0, 195, 255, 0.5);
+}
+
+.holo-chess-top p {
+  color: #668ba9;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.holo-chess-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #50eaff;
+  font-size: 10px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.holo-chess-status span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00eaff;
+  box-shadow: 0 0 12px #00eaff;
+  animation: holoStatusPulse 1.5s infinite;
+}
+
+.holo-board-frame {
+  width: min(100%, 570px);
+  margin: 0 auto;
+  padding: 12px;
+  position: relative;
+  border: 1px solid rgba(0, 208, 255, 0.65);
+  border-radius: 9px;
+  background: rgba(0, 35, 66, 0.5);
+  box-shadow:
+    0 0 20px rgba(0, 180, 255, 0.22),
+    inset 0 0 20px rgba(0, 180, 255, 0.12);
+}
+
+.holo-board-glow {
+  position: absolute;
+  inset: -15px;
+  pointer-events: none;
+  border-radius: 15px;
+  background: rgba(0, 145, 255, 0.08);
+  filter: blur(25px);
+}
+
+.holo-chess-board {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(0, 220, 255, 0.65);
+  box-shadow: 0 0 20px rgba(0, 195, 255, 0.2);
+}
+
+.holo-square {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.holo-square-light {
+  background:
+    linear-gradient(135deg, rgba(30, 120, 160, 0.48), rgba(5, 40, 65, 0.7));
+}
+
+.holo-square-dark {
+  background:
+    linear-gradient(135deg, rgba(3, 20, 42, 0.95), rgba(0, 8, 22, 0.95));
+}
+
+.holo-square::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(0, 190, 255, 0.12);
+  pointer-events: none;
+}
+
+.holo-piece {
+  position: relative;
+  z-index: 2;
+  display: block;
+  font-family: "Segoe UI Symbol", "DejaVu Sans", serif;
+  font-size: clamp(24px, 5.4vw, 49px);
+  line-height: 1;
+  transition: filter 0.3s ease, transform 0.3s ease;
+  user-select: none;
+}
+
+.holo-piece-white {
+  color: #e9fcff;
+  -webkit-text-stroke: 1px #55dfff;
+  text-shadow:
+    0 0 5px #b7f6ff,
+    0 0 12px #00c8ff,
+    0 0 24px rgba(0, 195, 255, 0.9);
+}
+
+.holo-piece-black {
+  color: #123a69;
+  -webkit-text-stroke: 1px #168cff;
+  text-shadow:
+    0 0 5px #087aff,
+    0 0 13px #006eff,
+    0 0 24px rgba(0, 100, 255, 0.9);
+}
+
+.holo-coordinate {
+  position: absolute;
+  z-index: 3;
+  color: rgba(115, 225, 255, 0.75);
+  font-size: clamp(7px, 1.2vw, 10px);
+  font-weight: 700;
+}
+
+.holo-rank {
+  top: 3px;
+  left: 4px;
+}
+
+.holo-file {
+  right: 4px;
+  bottom: 2px;
+}
+
+.holo-chess-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 27px;
+  padding: 17px;
+  border: 1px solid rgba(0, 170, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(0, 35, 65, 0.4);
+}
+
+.holo-player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.holo-player-icon {
+  font-size: 30px;
+  text-shadow: 0 0 12px #00bfff;
+}
+
+.white-player {
+  color: #e9fcff;
+}
+
+.black-player {
+  color: #168cff;
+}
+
+.holo-player strong,
+.holo-player small {
+  display: block;
+}
+
+.holo-player strong {
+  color: #dffaff;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.holo-player small {
+  color: #668ba9;
+  font-size: 8px;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.holo-center-label {
+  text-align: center;
+}
+
+.holo-center-label span {
+  display: block;
+  color: #00cfff;
+  font-size: 21px;
+  font-weight: 900;
+  text-shadow: 0 0 15px #00bfff;
+}
+
+.holo-center-label small {
+  color: #668ba9;
+  font-size: 7px;
+  letter-spacing: 1px;
+}
+
+.holo-chess-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+  color: #426c8d;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+@keyframes holoStatusPulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 12px #00eaff;
+  }
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 3px #00eaff;
+  }
+}
+
+@media (max-width: 600px) {
+  .holo-chess-container {
+    padding: 15px;
+  }
+
+  .holo-chess-top {
+    align-items: flex-start;
+  }
+
+  .holo-chess-status {
+    font-size: 8px;
+  }
+
+  .holo-board-frame {
+    padding: 7px;
+  }
+
+  .holo-chess-bottom {
+    padding: 12px 8px;
+  }
+
+  .holo-player {
+    gap: 5px;
+  }
+
+  .holo-player-icon {
+    font-size: 23px;
+  }
+
+  .holo-player strong {
+    font-size: 10px;
+  }
+
+  .holo-chess-footer {
+    font-size: 7px;
+  }
+}
+
+/* CUSTOM ITB QUEST CHESS PIECES */
+
+.holo-piece {
+  transform-origin: center bottom;
+  filter: drop-shadow(0 0 7px currentColor);
+}
+
+.holo-piece-k,
+.holo-piece-q {
+  font-size: clamp(28px, 5.8vw, 53px);
+  filter:
+    drop-shadow(0 0 5px #00eaff)
+    drop-shadow(0 0 12px #008cff);
+}
+
+.holo-piece-r {
+  filter:
+    drop-shadow(0 0 5px #00cfff)
+    drop-shadow(0 0 12px #006eff);
+}
+
+.holo-piece-b {
+  filter:
+    drop-shadow(0 0 5px #53eaff)
+    drop-shadow(0 0 14px #008cff);
+}
+
+.holo-piece-n {
+  filter:
+    drop-shadow(0 0 6px #00eaff)
+    drop-shadow(0 0 16px #006eff);
+}
+
+.holo-piece-p {
+  font-size: clamp(23px, 4.8vw, 43px);
+  filter:
+    drop-shadow(0 0 5px #00cfff)
+    drop-shadow(0 0 10px #007bff);
+}
+
+.holo-piece-white {
+  color: #e5fcff;
+  -webkit-text-stroke: 1px #72edff;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 12px #00dfff,
+    0 0 25px #008cff;
+}
+
+.holo-piece-black {
+  color: #174b85;
+  -webkit-text-stroke: 1px #168fff;
+  text-shadow:
+    0 0 5px #008cff,
+    0 0 14px #006eff,
+    0 0 25px #004cff;
+}
+
+.custom-chess-piece {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 53px;
+  max-height: 62px;
+  overflow: visible;
+  animation: chessPieceGlow 3s ease-in-out infinite alternate;
+}
+
+.piece-white {
+  filter:
+    drop-shadow(0 0 4px #baf8ff)
+    drop-shadow(0 0 9px #00dfff);
+}
+
+.piece-black {
+  filter:
+    drop-shadow(0 0 5px #007bff)
+    drop-shadow(0 0 12px #0055ff);
+}
+
+@keyframes chessPieceGlow {
+  from {
+    opacity: .85;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.holo-piece {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.holo-piece:has(.custom-chess-piece) {
+  font-size: 0;
+}
+
+/* ALL CUSTOM CHESS PIECES */
+
+.holo-piece:has(.custom-chess-piece) {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+}
+
+.custom-chess-piece {
+  width: 100%;
+  height: 100%;
+  max-width: 53px;
+  max-height: 62px;
+  overflow: visible;
+}
+
+.holo-piece-r .custom-chess-piece,
+.holo-piece-b .custom-chess-piece,
+.holo-piece-n .custom-chess-piece {
+  max-width: 51px;
+}
+
+.holo-piece-p .custom-chess-piece {
+  max-width: 43px;
+  max-height: 53px;
+}
