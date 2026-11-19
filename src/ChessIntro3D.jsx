@@ -31,46 +31,75 @@ function Piece({ type = 'pawn', color = silver, position = [0, 0.08, 0], scale =
   const darkPiece = color === dark
   const glow = darkPiece ? '#087cff' : '#35c8ff'
 
-  useFrame(({ clock }) => {
-    if (!group.current) return
+  
+useFrame(({ clock }, delta) => {
+  if (!group.current) return
 
-    const t = clock.elapsedTime
-    const g = group.current
+  const t = clock.elapsedTime
+  const g = group.current
 
-    g.position.set(...position)
-    g.rotation.set(0, 0, 0)
+  const targetPosition = new THREE.Vector3(...position)
+  const targetRotation = new THREE.Euler(0, 0, 0)
 
-    if (animate === 'pawn') {
-      const p = smooth(1.2, 4.2, t)
-      g.position.x = THREE.MathUtils.lerp(-2.55, -0.25, p)
-      g.position.y += Math.sin(p * Math.PI * 5) * 0.12 * (p > 0 && p < 1 ? 1 : 0)
-    }
+  if (animate === 'pawn') {
+    const p = smooth(1.1, 4.2, t)
 
-    if (animate === 'knight') {
-      const p = smooth(4.1, 6.25, t)
-      g.position.x = THREE.MathUtils.lerp(2.7, -0.15, p)
-      g.position.z = THREE.MathUtils.lerp(0.5, 2.15, p)
-      g.position.y += Math.sin(p * Math.PI) * 1.6
-      g.rotation.z = -Math.sin(p * Math.PI) * 0.42
-      g.rotation.x = Math.sin(p * Math.PI) * 0.15
-    }
+    targetPosition.x = THREE.MathUtils.lerp(-2.55, -0.25, p)
+    targetPosition.y +=
+      Math.pow(Math.max(0, Math.sin(p * Math.PI * 5)), 1.5) * 0.2
 
-    if (animate === 'bishop') {
-      const p = smooth(7.1, 9.1, t)
-      g.position.x = THREE.MathUtils.lerp(-2.8, 0.25, p)
-      g.position.z = THREE.MathUtils.lerp(-1.8, -0.5, p)
-      g.position.y += Math.sin(p * Math.PI) * 0.9
-    }
+    targetRotation.y = Math.sin(p * Math.PI * 5) * 0.12
+  }
 
-    if (animate === 'king') {
-      g.position.y += Math.sin(t * 2) * 0.035
-      g.rotation.y = Math.sin(t * 0.5) * 0.08
-    }
+  if (animate === 'knight') {
+    const p = smooth(4.1, 6.15, t)
 
-    if (!animate) {
-      g.position.y += Math.sin(t * 1.4 + position[0]) * 0.025
-    }
-  })
+    targetPosition.x = THREE.MathUtils.lerp(2.7, -0.15, p)
+    targetPosition.z = THREE.MathUtils.lerp(0.5, 2.15, p)
+
+    // Lompatan dengan lengkungan tinggi
+    targetPosition.y += Math.sin(p * Math.PI) * 1.8
+
+    // Condong ke depan saat menyerang
+    targetRotation.z = -Math.sin(p * Math.PI) * 0.65
+    targetRotation.y = -p * 0.45
+
+    // Recoil ketika benturan
+    const impact = Math.exp(-Math.pow((t - 6.15) / 0.12, 2))
+    targetPosition.y += impact * 0.22
+    targetRotation.x += impact * 0.28
+  }
+
+  if (animate === 'bishop') {
+    const p = smooth(7.1, 9.1, t)
+
+    targetPosition.x = THREE.MathUtils.lerp(-2.8, 0.25, p)
+    targetPosition.z = THREE.MathUtils.lerp(-1.8, -0.5, p)
+    targetPosition.y += Math.sin(p * Math.PI) * 1.3
+
+    targetRotation.z = -Math.sin(p * Math.PI) * 0.45
+    targetRotation.y = p * 0.6
+  }
+
+  if (animate === 'king') {
+    targetPosition.y += Math.sin(t * 2.2) * 0.045
+    targetRotation.y = Math.sin(t * 0.65) * 0.12
+  }
+
+  if (!animate) {
+    targetPosition.y += Math.sin(t * 1.4 + position[0]) * 0.025
+    targetRotation.y = Math.sin(t * 0.5) * 0.035
+  }
+
+  // Smooth movement with damping
+  const smoothing = 1 - Math.exp(-delta * 7)
+
+  g.position.lerp(targetPosition, smoothing)
+  g.rotation.x = THREE.MathUtils.damp(g.rotation.x, targetRotation.x, 8, delta)
+  g.rotation.y = THREE.MathUtils.damp(g.rotation.y, targetRotation.y, 8, delta)
+  g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotation.z, 8, delta)
+})
+
 
   return (
     <group ref={group} position={position} scale={scale}>
