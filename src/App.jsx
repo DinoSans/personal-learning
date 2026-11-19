@@ -183,11 +183,11 @@ function CustomChessPiece({ piece, color }) {
   const glowId = `piece-glow-${piece}-${color}`
 
   const common = {
-    fill: isWhite ? "#baf8ff" : "#124d91",
-    stroke: isWhite ? "#35eaff" : "#168cff",
-    strokeWidth: 2.5,
-    strokeLinejoin: "round",
-  }
+  fill: isWhite ? "#d9eaf5" : "#244d72",
+  stroke: isWhite ? "#8ac9e3" : "#5c9acb",
+  strokeWidth: 2,
+  strokeLinejoin: "round",
+}
 
   return (
     <svg
