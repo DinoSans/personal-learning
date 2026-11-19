@@ -806,6 +806,20 @@ async function takePhoto() {
   }
 }
   const [active, setActive] = useState('Dashboard')
+  // CHESS ARENA SETUP
+const [chessMode, setChessMode] = useState('standard')
+const [chessSide, setChessSide] = useState('random')
+const [chessPlayerColor, setChessPlayerColor] = useState('white')
+
+function startChessGame() {
+  const finalColor =
+    chessSide === 'random'
+      ? (Math.random() < 0.5 ? 'white' : 'black')
+      : chessSide
+
+  setChessPlayerColor(finalColor)
+  setActive('Catur')
+}
 const [previousPage, setPreviousPage] = useState('Dashboard')
 const [selectedNumber, setSelectedNumber] = useState(0)
 const [enteringMath, setEnteringMath] = useState(false)
@@ -2096,7 +2110,7 @@ if (!response.ok) {
     <div className="neural-game-grid">
       <div
         className="neural-game-card"
-        onClick={() => setActive('Catur')}
+        onClick={() => setActive('Chess Setup')}
       >
         <div className="neural-game-icon">♟</div>
         <span>LOGIC GAME 01</span>
@@ -2107,6 +2121,127 @@ if (!response.ok) {
     </div>
   </section>
 )}
+
+{active === 'Chess Setup' && (
+  <section className="chess-setup-page">
+
+    <button
+      className="math-back-button"
+      onClick={() => setActive('Neural Puzzle')}
+    >
+      ← KEMBALI
+    </button>
+
+    <div className="chess-setup-header">
+      <span>ITB QUEST · NEURAL SYSTEM</span>
+      <h1>CHESS ARENA</h1>
+      <p>CONFIGURE YOUR BATTLE</p>
+    </div>
+
+    <div className="chess-setup-panel">
+
+      <div className="chess-setup-section">
+        <span className="chess-setup-label">01 · ENGINE ANALYSIS</span>
+        <h2>SELECT AI MODE</h2>
+        <p>Choose your opponent's analysis level.</p>
+
+        <div className="chess-mode-grid">
+
+          <button
+            className={`chess-mode-card ${chessMode === 'lite' ? 'selected' : ''}`}
+            onClick={() => setChessMode('lite')}
+          >
+            <span>MODE 01</span>
+            <h3>LITE</h3>
+            <p>Analisis ringan dan cepat.</p>
+          </button>
+
+          <button
+            className={`chess-mode-card ${chessMode === 'standard' ? 'selected' : ''}`}
+            onClick={() => setChessMode('standard')}
+          >
+            <span>MODE 02</span>
+            <h3>STANDARD</h3>
+            <p>Analisis seimbang.</p>
+          </button>
+
+          <button
+            className={`chess-mode-card ${chessMode === 'strong' ? 'selected' : ''}`}
+            onClick={() => setChessMode('strong')}
+          >
+            <span>MODE 03</span>
+            <h3>STRONG</h3>
+            <p>Analisis lebih mendalam.</p>
+          </button>
+
+          <button
+            className={`chess-mode-card ${chessMode === 'maximum' ? 'selected' : ''}`}
+            onClick={() => setChessMode('maximum')}
+          >
+            <span>MODE 04</span>
+            <h3>MAXIMUM</h3>
+            <p>Analisis maksimal.</p>
+          </button>
+
+        </div>
+      </div>
+
+      <div className="chess-setup-divider"></div>
+
+      <div className="chess-setup-section">
+        <span className="chess-setup-label">02 · PLAYER CONFIGURATION</span>
+        <h2>CHOOSE YOUR SIDE</h2>
+        <p>Select your chess pieces.</p>
+
+        <div className="chess-side-grid">
+
+          <button
+            className={`chess-side-card ${chessSide === 'white' ? 'selected' : ''}`}
+            onClick={() => setChessSide('white')}
+          >
+            <span className="chess-side-symbol">♔</span>
+            <strong>WHITE</strong>
+            <small>PLAY AS WHITE</small>
+          </button>
+
+          <button
+            className={`chess-side-card ${chessSide === 'black' ? 'selected' : ''}`}
+            onClick={() => setChessSide('black')}
+          >
+            <span className="chess-side-symbol">♚</span>
+            <strong>BLACK</strong>
+            <small>PLAY AS BLACK</small>
+          </button>
+
+          <button
+            className={`chess-side-card ${chessSide === 'random' ? 'selected' : ''}`}
+            onClick={() => setChessSide('random')}
+          >
+            <span className="chess-side-symbol">⚄</span>
+            <strong>RANDOM</strong>
+            <small>LET SYSTEM DECIDE</small>
+          </button>
+
+        </div>
+      </div>
+
+      <div className="chess-setup-summary">
+        <span>YOUR CONFIGURATION</span>
+        <strong>{chessMode.toUpperCase()} MODE</strong>
+        <small>PLAYER SIDE: {chessSide.toUpperCase()}</small>
+      </div>
+
+      <button
+        className="chess-start-button"
+        onClick={startChessGame}
+      >
+        START GAME <span>→</span>
+      </button>
+
+    </div>
+  </section>
+)}
+
 {active === 'Catur' && (
   <section className="neural-page">
     <button
