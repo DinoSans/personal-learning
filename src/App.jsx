@@ -6,7 +6,7 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import './App.css'
-import ChessIntro3D from './ChessIntro3D'
+import ChessIntro from './ChessIntro'
 
 const chessBoardRows = [
   "rnbqkbnr",
@@ -1547,14 +1547,7 @@ if (!response.ok) {
     )
   }
 const openChessIntro = () => {
-  if (showChessIntro) return
-
   setShowChessIntro(true)
-
-  setTimeout(() => {
-    setShowChessIntro(false)
-    setActive('Chess Setup')
-  }, 18000)
 }
   return (
     <div className="app">
@@ -3331,7 +3324,14 @@ const openChessIntro = () => {
 
   </div>
 )}
-{showChessIntro && <ChessIntro3D />}
+{showChessIntro && (
+  <ChessIntro
+    onComplete={() => {
+      setShowChessIntro(false)
+      setActive('Chess Setup')
+    }}
+  />
+)}
     </div>
   )
 }
