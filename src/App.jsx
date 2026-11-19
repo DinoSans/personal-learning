@@ -1167,100 +1167,91 @@ if (!response.ok) {
       <p>Pilih materi yang ingin kamu pelajari.</p>
     </div>
 
-    <div className="math-material-grid">
-      <div
-  className="math-material-card number-feature-card"
-  onClick={enterNumberLearning}
->
-  <div className="number-card-image">
-    <img
-      src="/images/mengenal-angka.png"
-      alt="Ilustrasi belajar mengenal angka"
-    />
+    
+<div className="math-material-grid">
 
-    <span className="number-image-badge">
-      MATERI 01
-    </span>
-
-    <div className="number-image-overlay">
-      <span>INTERACTIVE LEARNING</span>
-      <h2>Mengenal Angka</h2>
-      <p>Mulai petualangan angka 0–10!</p>
-    </div>
-  </div>
-
-  <div className="number-feature-footer">
-    <span>EXPLORE LESSON</span>
-    <span>↗</span>
-  </div>
-</div>
-
-      <div
-  className="math-material-card number-feature-card"
-  onClick={enterPlaceValue}
-  style={{ cursor: 'pointer' }}
->
-  <div className="number-card-image">
-    <img
-      src="/images/nilai-tempat.png"
-      alt="Ilustrasi belajar nilai tempat"
-    />
-
-    <span className="number-image-badge">
-      MATERI 02
-    </span>
-
-    <div className="number-image-overlay">
-      <span>INTERACTIVE LEARNING</span>
-      <h2>Mengetahui Nilai Tempat</h2>
-      <p>Kenali satuan, puluhan, ratusan, dan ribuan!</p>
-    </div>
-  </div>
+  {/* MATERI 01 */}
   <div
-  className="math-material-card number-feature-card"
-  onClick={() => setActive('Dasar')}
-  style={{ cursor: 'pointer' }}
->
-  <div className="number-card-image">
+    className="math-material-card number-feature-card"
+    onClick={enterNumberLearning}
+  >
+    <div className="number-card-image">
+      <img
+        src="/images/mengenal-angka.png"
+        alt="Ilustrasi belajar mengenal angka"
+      />
+
+      <span className="number-image-badge">MATERI 01</span>
+
+      <div className="number-image-overlay">
+        <span>INTERACTIVE LEARNING</span>
+        <h2>Mengenal Angka</h2>
+        <p>Mulai petualangan angka 0–10!</p>
+      </div>
+    </div>
+
+    <div className="number-feature-footer">
+      <span>EXPLORE LESSON</span>
+      <span>↗</span>
+    </div>
+  </div>
+
+  {/* MATERI 02 */}
+  <div
+    className="math-material-card number-feature-card"
+    onClick={enterPlaceValue}
+  >
+    <div className="number-card-image">
+      <img
+        src="/images/nilai-tempat.png"
+        alt="Ilustrasi belajar nilai tempat"
+      />
+
+      <span className="number-image-badge">MATERI 02</span>
+
+      <div className="number-image-overlay">
+        <span>INTERACTIVE LEARNING</span>
+        <h2>Mengetahui Nilai Tempat</h2>
+        <p>Kenali satuan, puluhan, ratusan, dan ribuan!</p>
+      </div>
+    </div>
+
+    <div className="number-feature-footer">
+      <span>EXPLORE LESSON</span>
+      <span>↗</span>
+    </div>
+  </div>
+
+  {/* MATERI 03 */}
+  <div
+    className="math-material-card number-feature-card"
+    onClick={() => setActive('Dasar')}
+    style={{ cursor: 'pointer' }}
+  >
     <div className="number-card-image construction-placeholder">
-  <span className="number-image-badge">MATERI 03</span>
+      <span className="number-image-badge">MATERI 03</span>
 
-  <div className="construction-content">
-    <span className="construction-icon">🚧</span>
-    <h2>GAMBAR MASIH DALAM PEMBANGUNAN</h2>
-    <p>Ilustrasi materi sedang disiapkan.</p>
-  </div>
+      <div className="construction-content">
+        <span className="construction-icon">🚧</span>
+        <h2>GAMBAR MASIH DALAM PEMBANGUNAN</h2>
+        <p>Ilustrasi materi sedang disiapkan.</p>
+      </div>
 
-  <div className="number-image-overlay">
-    <span>MATHEMATICS FUNDAMENTAL</span>
-    <h2>Dasar Penjumlahan & Pengurangan</h2>
-    <p>Kenali dasar operasi hitung matematika!</p>
-  </div>
-</div>
+      <div className="number-image-overlay">
+        <span>MATHEMATICS FUNDAMENTAL</span>
+        <h2>Dasar Penjumlahan & Pengurangan</h2>
+        <p>Kenali dasar operasi hitung matematika!</p>
+      </div>
+    </div>
 
-    <span className="number-image-badge">
-      MATERI 03
-    </span>
-
-    <div className="number-image-overlay">
-      <span>MATHEMATICS FUNDAMENTAL</span>
-      <h2>Dasar Penjumlahan & Pengurangan</h2>
-      <p>Kenali dasar operasi hitung matematika!</p>
+    <div className="number-feature-footer">
+      <span>EXPLORE LESSON</span>
+      <span>↗</span>
     </div>
   </div>
 
-  <div className="number-feature-footer">
-    <span>EXPLORE LESSON</span>
-    <span>↗</span>
-  </div>
 </div>
 
-  <div className="number-feature-footer">
-    <span>EXPLORE LESSON</span>
-    <span>↗</span>
-  </div>
-</div>
-    </div>
   </section>
 )}
 {active === 'Mengenal Angka' && (
