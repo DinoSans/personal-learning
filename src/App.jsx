@@ -915,6 +915,7 @@ if (!response.ok) {
   ['⌂', 'Dashboard'],
   ['▤', 'Belajar'],
   ['◈', 'Quiz'],
+  ['🎮', 'Games'],
   ['✧', 'JARVIS'],
   ['⚑', 'Misi'],
   ...(user?.role === 'admin' ? [['⚙', 'Admin']] : []),
@@ -1104,7 +1105,8 @@ if (!response.ok) {
           </div>
         </header>
 
-        <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''} ${active === 'Belajar' ? 'learning-active' : ''} ${active === 'Matematika' ? 'math-active' : ''}`}>
+        <div className={`page-content ${active === 'JARVIS' ? 'jarvis-active' : ''} ${active === 'Belajar' ? 'learning-active' : ''} ${active === 'Matematika' ? 'math-active' : ''}
+        ${active === 'Games' ? 'games-active' : ''}`}>
           {active === 'Admin' && user?.role === 'admin' && (
   <section className="admin-page">
     <div className="admin-heading">
@@ -1813,6 +1815,120 @@ if (!response.ok) {
       KNOWLEDGE IS THE FIRST STEP TO GREATNESS.
       <span>✦</span>
     </div>
+  </section>
+)}
+{active === 'Games' && (
+  <section className="games-page">
+
+    <div className="games-topbar">
+      <div>
+        <span className="games-kicker">ITB QUEST · ENTERTAINMENT CENTER</span>
+        <h1>GAMES <span>HUB</span></h1>
+        <p>TAKE A BREAK. EXPLORE ANOTHER DIMENSION.</p>
+      </div>
+
+      <div className="games-status">
+        <span className="games-status-dot"></span>
+        ARCADE SYSTEM ONLINE
+      </div>
+    </div>
+
+    <div className="games-hero">
+      <div className="games-hero-content">
+        <span className="games-label">WELCOME TO THE ARCADE</span>
+        <h2>YOUR NEXT<br /><span>ADVENTURE</span><br />STARTS HERE.</h2>
+        <p>
+          Tinggalkan sejenak rutinitas belajar dan jelajahi
+          dunia hiburan futuristik ITB QUEST.
+        </p>
+        <div className="games-hero-tag">
+          <span>✦</span> GAMING DIMENSION
+        </div>
+      </div>
+
+      <div className="games-hero-visual">
+        <div className="games-orbit orbit-a"></div>
+        <div className="games-orbit orbit-b"></div>
+        <div className="games-orbit orbit-c"></div>
+        <div className="games-planet">
+          <span>GAME</span>
+          <strong>ZONE</strong>
+          <div className="games-planet-light"></div>
+        </div>
+        <div className="games-floating-symbol symbol-a">✦</div>
+        <div className="games-floating-symbol symbol-b">◈</div>
+        <div className="games-floating-symbol symbol-c">+</div>
+      </div>
+    </div>
+
+    <div className="games-section-heading">
+      <div>
+        <span className="games-kicker">EXPLORE THE UNIVERSE</span>
+        <h2>ARCADE COLLECTION</h2>
+      </div>
+      <span className="games-coming">NEW EXPERIENCES AWAIT</span>
+    </div>
+
+    <div className="games-card-grid">
+
+      <div className="games-card games-card-one">
+        <div className="games-card-art">
+          <div className="games-art-glow"></div>
+          <div className="games-art-icon">🚀</div>
+          <span className="games-art-code">ZONE 01</span>
+        </div>
+        <div className="games-card-info">
+          <span>SPACE ADVENTURE</span>
+          <h3>GALAXY RUNNER</h3>
+          <p>EXPLORE THE UNKNOWN UNIVERSE.</p>
+          <div className="games-card-bottom">
+            <span>COMING SOON</span>
+            <span>01 / 03</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="games-card games-card-two">
+        <div className="games-card-art">
+          <div className="games-art-glow"></div>
+          <div className="games-art-icon">🧩</div>
+          <span className="games-art-code">ZONE 02</span>
+        </div>
+        <div className="games-card-info">
+          <span>LOGIC CHALLENGE</span>
+          <h3>NEURAL PUZZLE</h3>
+          <p>CHALLENGE YOUR THINKING.</p>
+          <div className="games-card-bottom">
+            <span>COMING SOON</span>
+            <span>02 / 03</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="games-card games-card-three">
+        <div className="games-card-art">
+          <div className="games-art-glow"></div>
+          <div className="games-art-icon">⚡</div>
+          <span className="games-art-code">ZONE 03</span>
+        </div>
+        <div className="games-card-info">
+          <span>ARCADE CHALLENGE</span>
+          <h3>CYBER BLAST</h3>
+          <p>ENTER THE DIGITAL BATTLEFIELD.</p>
+          <div className="games-card-bottom">
+            <span>COMING SOON</span>
+            <span>03 / 03</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div className="games-footer">
+      <span>ITB QUEST ARCADE SYSTEM</span>
+      <span>YOUR WORLD. YOUR ADVENTURE.</span>
+    </div>
+
   </section>
 )}
           <section className="welcome">
