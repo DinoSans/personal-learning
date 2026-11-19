@@ -3459,3 +3459,36 @@ footer {
     letter-spacing: 2px;
   }
 }
+.construction-placeholder {
+  min-height: 260px;
+  background:
+    radial-gradient(circle at center, rgba(0, 180, 255, 0.16), transparent 65%),
+    linear-gradient(135deg, #07172d, #030914);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.construction-content {
+  text-align: center;
+  padding: 25px;
+  color: #d9f5ff;
+}
+
+.construction-icon {
+  font-size: 42px;
+}
+
+.construction-content h2 {
+  font-size: 17px;
+  letter-spacing: 2px;
+  color: #55d9ff;
+  margin: 14px 0 8px;
+}
+
+.construction-content p {
+  font-size: 12px;
+  color: #91aabd;
+}
