@@ -1216,6 +1216,44 @@ if (!response.ok) {
       <p>Kenali satuan, puluhan, ratusan, dan ribuan!</p>
     </div>
   </div>
+  <div
+  className="math-material-card number-feature-card"
+  onClick={() => setActive('Dasar')}
+  style={{ cursor: 'pointer' }}
+>
+  <div className="number-card-image">
+    <div className="number-card-image construction-placeholder">
+  <span className="number-image-badge">MATERI 03</span>
+
+  <div className="construction-content">
+    <span className="construction-icon">🚧</span>
+    <h2>GAMBAR MASIH DALAM PEMBANGUNAN</h2>
+    <p>Ilustrasi materi sedang disiapkan.</p>
+  </div>
+
+  <div className="number-image-overlay">
+    <span>MATHEMATICS FUNDAMENTAL</span>
+    <h2>Dasar Penjumlahan & Pengurangan</h2>
+    <p>Kenali dasar operasi hitung matematika!</p>
+  </div>
+</div>
+
+    <span className="number-image-badge">
+      MATERI 03
+    </span>
+
+    <div className="number-image-overlay">
+      <span>MATHEMATICS FUNDAMENTAL</span>
+      <h2>Dasar Penjumlahan & Pengurangan</h2>
+      <p>Kenali dasar operasi hitung matematika!</p>
+    </div>
+  </div>
+
+  <div className="number-feature-footer">
+    <span>EXPLORE LESSON</span>
+    <span>↗</span>
+  </div>
+</div>
 
   <div className="number-feature-footer">
     <span>EXPLORE LESSON</span>
@@ -1361,6 +1399,34 @@ if (!response.ok) {
         <h3>Ribuan</h3>
         <strong>1.000</strong>
         <p>Posisi keempat dari kanan. Contoh: angka 1 bernilai 1.000.</p>
+      </div>
+    </div>
+  </section>
+)}
+{active === 'Dasar' && (
+  <section className="number-learning-page">
+    <button
+      className="math-back-button"
+      onClick={() => setActive('Matematika')}
+    >
+      ← KEMBALI
+    </button>
+
+    <div className="number-learning-header">
+      <span className="subject-kicker">MATERI 03 · MATEMATIKA</span>
+      <h1>Dasar Penjumlahan & Pengurangan</h1>
+      <p>
+        Pelajari dasar operasi hitung matematika di sini.
+      </p>
+    </div>
+
+    <div className="place-value-hero">
+      <div className="place-value-intro">
+        <h2>LEARNING MODULE</h2>
+        <p>
+          Materi pembelajaran sedang disiapkan.
+          Petualangan matematika akan segera dimulai!
+        </p>
       </div>
     </div>
   </section>
