@@ -6,6 +6,7 @@ import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import './App.css'
+import ChessIntro3D from './ChessIntro3D'
 
 const chessBoardRows = [
   "rnbqkbnr",
@@ -3330,64 +3331,7 @@ const openChessIntro = () => {
 
   </div>
 )}
-{showChessIntro && (
-  <div className="chess-intro-overlay" role="presentation" aria-label="ITB Quest Chess cinematic intro">
-    <div className="chess-intro-scanlines"></div>
-    <div className="chess-intro-grid"></div>
-
-    <div className="chess-intro-topbar">
-      <span>ITB QUEST · NEURAL SYSTEM</span>
-      <span>CHESS PROTOCOL ACTIVATED</span>
-    </div>
-
-    <div className="chess-intro-scene">
-      <div className="chess-intro-board">
-        {Array.from({ length: 64 }, (_, i) => (
-          <span
-            key={i}
-            className={
-              Math.floor(i / 8) % 2 === i % 2
-                ? 'chess-intro-light'
-                : 'chess-intro-dark'
-            }
-          />
-        ))}
-
-        <span className="chess-intro-piece intro-pawn">♟</span>
-        <span className="chess-intro-piece intro-knight">♞</span>
-        <span className="chess-intro-piece intro-bishop">♝</span>
-        <span className="chess-intro-piece intro-queen">♛</span>
-        <span className="chess-intro-piece intro-rook">♜</span>
-        <span className="chess-intro-piece intro-king">♚</span>
-
-        <span className="chess-intro-impact impact-one">✦</span>
-        <span className="chess-intro-impact impact-two">✧</span>
-        <span className="chess-intro-impact impact-three">✦</span>
-        <span className="chess-intro-particles"></span>
-      </div>
-    </div>
-
-    <div className="chess-intro-caption">
-      <span className="intro-caption-one">A SINGLE MOVE CHANGES EVERYTHING.</span>
-      <span className="intro-caption-two">STRATEGY. PRECISION. INTELLIGENCE.</span>
-    </div>
-
-    <div className="chess-intro-logo">
-      <span>ITB QUEST · GAME MODULE 01</span>
-      <h1>CHESS<span>.</span></h1>
-      <p>THE BATTLE OF STRATEGY BEGINS</p>
-      <div className="chess-intro-loading">
-        <span></span>
-      </div>
-      <small>INITIALIZING CHESS ARENA...</small>
-    </div>
-
-    <div className="chess-intro-corner">
-      <span>64</span>
-      <small>SQUARES</small>
-    </div>
-  </div>
-)}
+{showChessIntro && <ChessIntro3D />}
     </div>
   )
 }

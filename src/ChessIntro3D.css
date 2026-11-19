@@ -1,0 +1,19 @@
+.chess3d-overlay{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#020712;color:#eaf8ff;font-family:Inter, sans-serif;isolation:isolate}
+.chess3d-overlay canvas{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block}
+.chess3d-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 25%,rgba(0,4,15,.38) 72%,#02040c 120%),linear-gradient(0deg,rgba(0,9,25,.62),transparent 45%,rgba(0,7,20,.45)}
+.chess3d-topline{position:absolute;top:28px;left:5vw;right:5vw;display:flex;justify-content:space-between;gap:16px;font-size:10px;letter-spacing:.22em;color:#8bdcff;text-shadow:0 0 15px #168bff}
+.chess3d-caption{position:absolute;left:50%;top:17%;transform:translateX(-50%);width:90%;text-align:center;display:grid;gap:10px;animation:chess3d-caption 18s ease both}
+.chess3d-caption span{font-size:clamp(12px,2vw,21px);font-weight:800;letter-spacing:.2em;text-shadow:0 0 20px #168bff}
+.chess3d-caption small{font-size:9px;letter-spacing:.35em;color:#80bfe8}
+.chess3d-title{position:absolute;left:50%;bottom:10%;transform:translateX(-50%);width:90%;text-align:center;display:grid;justify-items:center;gap:10px;animation:chess3d-title 18s ease both}
+.chess3d-title>small{font-size:9px;letter-spacing:.3em;color:#85c9ee}
+.chess3d-title h1{font-size:clamp(58px,12vw,140px);line-height:.9;letter-spacing:.08em;font-weight:900;text-shadow:0 0 12px #fff,0 0 35px #178fff,0 0 85px #087cff}
+.chess3d-title h1 span{color:#56caff}
+.chess3d-title p{font-size:10px;letter-spacing:.32em;color:#b9e9ff}
+.chess3d-title i{display:block;width:min(240px,55vw);height:2px;margin:8px 0;background:linear-gradient(90deg,transparent,#5bd5ff,transparent);box-shadow:0 0 18px #168bff}
+.chess3d-coordinates{position:absolute;bottom:28px;right:5vw;font-size:9px;letter-spacing:.2em;color:#80bfe8}
+.chess3d-coordinates b{color:#fff;margin:0 8px}
+@keyframes chess3d-caption{0%,12%{opacity:0;filter:blur(8px)}20%,48%{opacity:1;filter:blur(0)}65%,100%{opacity:0}}
+@keyframes chess3d-title{0%,62%{opacity:0;filter:blur(12px);transform:translate(-50%,20px)}76%,100%{opacity:1;filter:blur(0);transform:translate(-50%,0)}}
+@media(max-width:600px){.chess3d-topline{top:18px;font-size:8px;letter-spacing:.1em}.chess3d-caption{top:14%}.chess3d-caption span{letter-spacing:.1em}.chess3d-title{bottom:12%}.chess3d-title p{letter-spacing:.15em}.chess3d-coordinates{font-size:7px;bottom:16px}}
+@media(prefers-reduced-motion:reduce){.chess3d-caption,.chess3d-title{animation:none}}
