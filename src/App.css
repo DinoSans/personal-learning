@@ -3915,3 +3915,234 @@ footer {
     font-size: calc(var(--size) * .8);
   }
 }
+/* ===== BASIC MATHEMATICS LESSON ===== */
+
+.basic-math-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.basic-math-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 45px 30px;
+  border: 1px solid rgba(0, 174, 255, .3);
+  border-radius: 20px;
+  text-align: center;
+  background:
+    radial-gradient(circle at center, rgba(0, 145, 255, .2), transparent 65%),
+    linear-gradient(135deg, #071a32, #030914);
+}
+
+.basic-math-hero > span,
+.basic-lesson-content .subject-kicker,
+.basic-practice-card .subject-kicker {
+  color: #49ceff;
+  letter-spacing: 3px;
+  font-size: 11px;
+}
+
+.basic-math-hero h2 {
+  color: #eafaff;
+  font-size: clamp(23px, 4vw, 38px);
+  text-shadow: 0 0 20px #008cff;
+}
+
+.basic-math-hero p {
+  color: #a6bed5;
+  max-width: 550px;
+  margin: auto;
+  line-height: 1.8;
+}
+
+.basic-math-symbols {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin-top: 25px;
+}
+
+.basic-math-symbols span {
+  font-size: 48px;
+  color: #51d8ff;
+  font-weight: 900;
+  text-shadow: 0 0 25px #008cff;
+}
+
+.basic-lesson-card,
+.basic-practice-card {
+  display: flex;
+  gap: 25px;
+  padding: 28px;
+  border: 1px solid rgba(0, 153, 255, .23);
+  border-radius: 18px;
+  background: rgba(5, 19, 38, .85);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, .2);
+}
+
+.basic-lesson-number {
+  color: #39c9ff;
+  font-size: 35px;
+  font-weight: 900;
+  text-shadow: 0 0 18px #008cff;
+}
+
+.basic-lesson-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.basic-lesson-content h2,
+.basic-practice-card h2 {
+  color: #eafaff;
+  font-size: 25px;
+  margin: 10px 0;
+}
+
+.basic-lesson-content p,
+.basic-practice-card p {
+  color: #a7bdd2;
+  line-height: 1.8;
+}
+
+.basic-example-box {
+  margin: 25px 0;
+  padding: 25px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 174, 255, .25);
+  background: rgba(0, 115, 210, .08);
+}
+
+.basic-example-box h3 {
+  color: #58d6ff;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.basic-equation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 25px 0;
+  font-size: 38px;
+  font-weight: 900;
+  color: white;
+}
+
+.basic-equation .operator {
+  color: #43caff;
+}
+
+.basic-equation .result {
+  color: #60f3ff;
+  text-shadow: 0 0 20px #00aaff;
+}
+
+.basic-lesson-content ol {
+  color: #b8cce0;
+  line-height: 2.2;
+  padding-left: 22px;
+}
+
+.basic-tip {
+  padding: 17px;
+  margin-top: 20px;
+  border-left: 3px solid #27caff;
+  background: rgba(0, 145, 255, .08);
+}
+
+.basic-tip strong {
+  color: #50d8ff;
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+
+.basic-tip p {
+  margin-bottom: 0;
+}
+
+.basic-practice-card {
+  display: block;
+  text-align: center;
+  padding: 35px 20px;
+}
+
+.basic-question-number {
+  color: #58d6ff;
+  margin: 25px 0 10px;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.basic-question {
+  font-size: clamp(32px, 6vw, 55px);
+  font-weight: 900;
+  color: #fff;
+  margin: 20px 0;
+  text-shadow: 0 0 20px #008cff;
+}
+
+.basic-answer-input {
+  width: min(300px, 100%);
+  padding: 14px;
+  color: white;
+  background: #07172b;
+  border: 1px solid #168bca;
+  border-radius: 10px;
+  outline: none;
+  text-align: center;
+  font-size: 18px;
+}
+
+.basic-practice-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.basic-practice-actions button {
+  padding: 13px 20px;
+  border: 1px solid #20baff;
+  border-radius: 9px;
+  color: #eafaff;
+  background: rgba(0, 145, 255, .16);
+  cursor: pointer;
+}
+
+.basic-practice-actions button:hover {
+  background: rgba(0, 145, 255, .35);
+}
+
+.basic-feedback {
+  max-width: 550px;
+  margin: 20px auto 0;
+  padding: 15px;
+  border-radius: 10px;
+  color: #8ceaff;
+  background: rgba(0, 145, 255, .12);
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .basic-lesson-card {
+    padding: 18px;
+    gap: 12px;
+  }
+
+  .basic-lesson-number {
+    font-size: 25px;
+  }
+
+  .basic-equation {
+    gap: 12px;
+    font-size: 30px;
+  }
+
+  .basic-math-hero {
+    padding: 30px 18px;
+  }
+}

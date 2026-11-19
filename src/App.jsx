@@ -670,6 +670,9 @@ const [enteringPlaceValue, setEnteringPlaceValue] = useState(false)
 const [enteringBasicMath, setEnteringBasicMath] = useState(false)
 const [basicMathParticles, setBasicMathParticles] = useState([])
 const [basicMathResult, setBasicMathResult] = useState(0)
+const [basicAnswer, setBasicAnswer] = useState('')
+const [basicQuestion, setBasicQuestion] = useState(0)
+const [basicFeedback, setBasicFeedback] = useState('')
 
 const enterPlaceValue = () => {
   if (enteringPlaceValue) return
@@ -713,6 +716,54 @@ const enterBasicMath = () => {
     setActive('Dasar')
     setEnteringBasicMath(false)
   }, 3800)
+}
+const basicMathQuestions = [
+  {
+    question: '12 + 8',
+    answer: 20,
+    explanation: '12 ditambah 8 menghasilkan 20.'
+  },
+  {
+    question: '25 - 9',
+    answer: 16,
+    explanation: '25 dikurangi 9 menghasilkan 16.'
+  },
+  {
+    question: '34 + 15',
+    answer: 49,
+    explanation: '34 + 10 = 44, kemudian 44 + 5 = 49.'
+  },
+  {
+    question: '50 - 23',
+    answer: 27,
+    explanation: '50 - 20 = 30, kemudian 30 - 3 = 27.'
+  },
+  {
+    question: '45 + 27',
+    answer: 72,
+    explanation: '45 + 20 = 65, lalu 65 + 7 = 72.'
+  }
+]
+
+const checkBasicAnswer = () => {
+  const current = basicMathQuestions[basicQuestion]
+
+  if (basicAnswer.trim() === '') {
+    setBasicFeedback('Masukkan jawaban terlebih dahulu!')
+    return
+  }
+
+  if (Number(basicAnswer) === current.answer) {
+    setBasicFeedback(`BENAR! ${current.explanation}`)
+  } else {
+    setBasicFeedback('Belum tepat. Coba hitung kembali, ya!')
+  }
+}
+
+const nextBasicQuestion = () => {
+  setBasicQuestion((prev) => (prev + 1) % basicMathQuestions.length)
+  setBasicAnswer('')
+  setBasicFeedback('')
 }
 const enterNumberLearning = () => {
   if (enteringMath) return
@@ -1426,7 +1477,8 @@ if (!response.ok) {
   </section>
 )}
 {active === 'Dasar' && (
-  <section className="number-learning-page">
+  <section className="number-learning-page basic-math-page">
+
     <button
       className="math-back-button"
       onClick={() => setActive('Matematika')}
@@ -1435,22 +1487,181 @@ if (!response.ok) {
     </button>
 
     <div className="number-learning-header">
-      <span className="subject-kicker">MATERI 03 · MATEMATIKA</span>
-      <h1>Dasar Penjumlahan & Pengurangan</h1>
+      <span className="subject-kicker">
+        MATERI 03 · MATEMATIKA FUNDAMENTAL
+      </span>
+
+      <h1>Penjumlahan & Pengurangan</h1>
+
       <p>
-        Pelajari dasar operasi hitung matematika di sini.
+        Kuasai dua operasi dasar matematika dan temukan
+        bagaimana angka bekerja bersama!
       </p>
     </div>
 
-    <div className="place-value-hero">
-      <div className="place-value-intro">
-        <h2>LEARNING MODULE</h2>
-        <p>
-          Materi pembelajaran sedang disiapkan.
-          Petualangan matematika akan segera dimulai!
-        </p>
+    <div className="basic-math-hero">
+      <span>MATHEMATICAL FUNDAMENTALS</span>
+      <h2>THE POWER OF NUMBERS</h2>
+      <p>
+        Penjumlahan dan pengurangan adalah dasar untuk
+        memahami berbagai operasi matematika.
+      </p>
+
+      <div className="basic-math-symbols">
+        <span>+</span>
+        <span>−</span>
+        <span>=</span>
       </div>
     </div>
+
+    {/* PENJUMLAHAN */}
+
+    <div className="basic-lesson-card">
+      <div className="basic-lesson-number">01</div>
+
+      <div className="basic-lesson-content">
+        <span className="subject-kicker">OPERASI PERTAMA</span>
+        <h2>Penjumlahan (+)</h2>
+
+        <p>
+          Penjumlahan adalah operasi matematika untuk
+          menggabungkan dua bilangan atau lebih sehingga
+          menghasilkan jumlah yang baru.
+        </p>
+
+        <div className="basic-example-box">
+          <h3>CONTOH PENJUMLAHAN</h3>
+
+          <div className="basic-equation">
+            <span>5</span>
+            <span className="operator">+</span>
+            <span>3</span>
+            <span className="operator">=</span>
+            <span className="result">8</span>
+          </div>
+
+          <p>
+            Bayangkan kamu memiliki 5 apel, kemudian mendapatkan
+            3 apel lagi. Sekarang kamu memiliki 8 apel.
+          </p>
+        </div>
+
+        <h3>Bagaimana cara menghitungnya?</h3>
+
+        <ol>
+          <li>Mulai dari angka pertama, yaitu 5.</li>
+          <li>Tambahkan 3 angka berikutnya.</li>
+          <li>Hitung maju: 6, 7, 8.</li>
+          <li>Jadi, hasilnya adalah 8.</li>
+        </ol>
+
+        <div className="basic-tip">
+          <strong>TIP JARVIS</strong>
+          <p>
+            Penjumlahan membuat jumlah bilangan menjadi lebih
+            besar atau tetap sama jika ditambahkan nol.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* PENGURANGAN */}
+
+    <div className="basic-lesson-card">
+      <div className="basic-lesson-number">02</div>
+
+      <div className="basic-lesson-content">
+        <span className="subject-kicker">OPERASI KEDUA</span>
+        <h2>Pengurangan (−)</h2>
+
+        <p>
+          Pengurangan adalah operasi matematika untuk mengambil
+          sebagian nilai dari suatu bilangan sehingga menghasilkan
+          selisih.
+        </p>
+
+        <div className="basic-example-box">
+          <h3>CONTOH PENGURANGAN</h3>
+
+          <div className="basic-equation">
+            <span>9</span>
+            <span className="operator">−</span>
+            <span>4</span>
+            <span className="operator">=</span>
+            <span className="result">5</span>
+          </div>
+
+          <p>
+            Kamu memiliki 9 apel, kemudian memberikan 4 apel
+            kepada teman. Sekarang tersisa 5 apel.
+          </p>
+        </div>
+
+        <h3>Bagaimana cara menghitungnya?</h3>
+
+        <ol>
+          <li>Mulai dari angka 9.</li>
+          <li>Kurangi sebanyak 4.</li>
+          <li>Hitung mundur: 8, 7, 6, 5.</li>
+          <li>Jadi, hasilnya adalah 5.</li>
+        </ol>
+
+        <div className="basic-tip">
+          <strong>TIP JARVIS</strong>
+          <p>
+            Pengurangan digunakan untuk mencari sisa atau
+            selisih antara dua bilangan.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {/* LATIHAN */}
+
+    <div className="basic-practice-card">
+      <span className="subject-kicker">JARVIS TRAINING SYSTEM</span>
+      <h2>Uji Kemampuanmu!</h2>
+
+      <p>
+        Selesaikan soal berikut untuk menguji pemahamanmu.
+      </p>
+
+      <div className="basic-question-number">
+        SOAL {basicQuestion + 1} / {basicMathQuestions.length}
+      </div>
+
+      <div className="basic-question">
+        {basicMathQuestions[basicQuestion].question} = ?
+      </div>
+
+      <input
+        type="number"
+        value={basicAnswer}
+        onChange={(e) => {
+          setBasicAnswer(e.target.value)
+          setBasicFeedback('')
+        }}
+        placeholder="Masukkan jawaban..."
+        className="basic-answer-input"
+      />
+
+      <div className="basic-practice-actions">
+        <button onClick={checkBasicAnswer}>
+          PERIKSA JAWABAN
+        </button>
+
+        <button onClick={nextBasicQuestion}>
+          SOAL BERIKUTNYA →
+        </button>
+      </div>
+
+      {basicFeedback && (
+        <div className="basic-feedback">
+          {basicFeedback}
+        </div>
+      )}
+    </div>
+
   </section>
 )}
 {active === 'Belajar' && (
