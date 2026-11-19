@@ -667,6 +667,9 @@ const [previousPage, setPreviousPage] = useState('Dashboard')
 const [selectedNumber, setSelectedNumber] = useState(0)
 const [enteringMath, setEnteringMath] = useState(false)
 const [enteringPlaceValue, setEnteringPlaceValue] = useState(false)
+const [enteringBasicMath, setEnteringBasicMath] = useState(false)
+const [basicMathParticles, setBasicMathParticles] = useState([])
+const [basicMathResult, setBasicMathResult] = useState(0)
 
 const enterPlaceValue = () => {
   if (enteringPlaceValue) return
@@ -682,6 +685,34 @@ const enterPlaceValue = () => {
 const openMatematika = () => {
   setPreviousPage(active)
   setActive('Matematika')
+}
+const enterBasicMath = () => {
+  if (enteringBasicMath) return
+
+  const particles = Array.from({ length: 32 }, (_, i) => {
+    const angle = Math.random() * Math.PI * 2
+    const distance = 35 + Math.random() * 35
+
+    return {
+      id: i,
+      value: Math.random() > 0.35
+        ? String(Math.floor(Math.random() * 90) + 1)
+        : Math.random() > 0.5 ? '+' : '−',
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance,
+      delay: Math.random() * 0.7,
+      size: 18 + Math.random() * 25,
+    }
+  })
+
+  setBasicMathParticles(particles)
+  setBasicMathResult(Math.floor(Math.random() * 90) + 10)
+  setEnteringBasicMath(true)
+
+  setTimeout(() => {
+    setActive('Dasar')
+    setEnteringBasicMath(false)
+  }, 3800)
 }
 const enterNumberLearning = () => {
   if (enteringMath) return
@@ -1225,7 +1256,7 @@ if (!response.ok) {
   {/* MATERI 03 */}
   <div
     className="math-material-card number-feature-card"
-    onClick={() => setActive('Dasar')}
+    onClick={enterBasicMath}
     style={{ cursor: 'pointer' }}
   >
     <div className="number-card-image construction-placeholder">
@@ -2025,6 +2056,56 @@ if (!response.ok) {
       </div>
       <small>PREPARING YOUR MATHEMATICAL JOURNEY...</small>
     </div>
+  </div>
+)}
+{enteringBasicMath && (
+  <div className="basic-entry-animation">
+
+    <div className="basic-entry-grid"></div>
+    <div className="basic-entry-vortex"></div>
+    <div className="basic-entry-flash"></div>
+
+    <div className="basic-entry-heading">
+      <span>ITB QUEST · MATHEMATICS</span>
+      <h1>MATHEMATICAL COLLISION</h1>
+      <p>GENERATING MATHEMATICAL DIMENSION</p>
+    </div>
+
+    <div className="basic-entry-particles">
+      {basicMathParticles.map((particle) => (
+        <span
+          key={particle.id}
+          className="basic-entry-particle"
+          style={{
+            '--sx': `${particle.x}vw`,
+            '--sy': `${particle.y}vh`,
+            '--delay': `${particle.delay}s`,
+            '--size': `${particle.size}px`,
+          }}
+        >
+          {particle.value}
+        </span>
+      ))}
+    </div>
+
+    <div className="basic-entry-core">
+      <div className="basic-core-ring basic-core-ring-one"></div>
+      <div className="basic-core-ring basic-core-ring-two"></div>
+      <div className="basic-core-ring basic-core-ring-three"></div>
+
+      <div className="basic-core-result">
+        {basicMathResult}
+      </div>
+    </div>
+
+    <div className="basic-entry-bottom">
+      <span>CALCULATING · COLLIDING · CREATING</span>
+      <div className="basic-entry-progress">
+        <div></div>
+      </div>
+      <small>ENTERING MATHEMATICAL DIMENSION...</small>
+    </div>
+
   </div>
 )}
     </div>
