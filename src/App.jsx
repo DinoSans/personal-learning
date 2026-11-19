@@ -1,5 +1,6 @@
 
 import { useState, useRef, useEffect } from 'react'
+import { Chess } from 'chess.js'
 import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
@@ -808,6 +809,19 @@ async function takePhoto() {
   const [active, setActive] = useState('Dashboard')
   // CHESS ARENA SETUP
 const [chessMode, setChessMode] = useState('standard')
+// CHESS GAME ENGINE
+const chessRef = useRef(new Chess())
+const stockfishRef = useRef(null)
+
+const [chessFen, setChessFen] = useState(
+  chessRef.current.fen()
+)
+const [engineReady, setEngineReady] = useState(false)
+const [aiThinking, setAiThinking] = useState(false)
+const [selectedSquare, setSelectedSquare] = useState(null)
+const [legalMoves, setLegalMoves] = useState([])
+const [moveHistory, setMoveHistory] = useState([])
+const [chessStatus, setChessStatus] = useState('WHITE TURN')
 const [chessSide, setChessSide] = useState('random')
 const [chessPlayerColor, setChessPlayerColor] = useState('white')
 
@@ -817,9 +831,141 @@ function startChessGame() {
       ? (Math.random() < 0.5 ? 'white' : 'black')
       : chessSide
 
+  chessRef.current = new Chess()
+
   setChessPlayerColor(finalColor)
+  setChessFen(chessRef.current.fen())
+  setSelectedSquare(null)
+  setLegalMoves([])
+  setMoveHistory([])
+  setAiThinking(false)
+  setChessStatus('WHITE TURN')
+
   setActive('Catur')
 }
+function getChessStatus(game) {
+  if (game.isCheckmate()) {
+    return `CHECKMATE — ${game.turn() === 'w' ? 'BLACK' : 'WHITE'} WINS`
+  }
+
+  if (game.isStalemate()) {
+    return 'DRAW — STALEMATE'
+  }
+
+  if (game.isDraw()) {
+    return 'DRAW — GAME OVER'
+  }
+
+  if (game.isCheck()) {
+    return `${game.turn() === 'w' ? 'WHITE' : 'BLACK'} IN CHECK`
+  }
+
+  return `${game.turn() === 'w' ? 'WHITE' : 'BLACK'} TURN`
+}
+// STOCKFISH ENGINE CONNECTION
+useEffect(() => {
+  if (active !== 'Catur') return
+
+  setEngineReady(false)
+
+  const worker = new Worker(
+    '/engine/stockfish-19-lite-single.js'
+  )
+
+  stockfishRef.current = worker
+
+  worker.onmessage = (event) => {
+    const line = String(event.data || '')
+
+    if (line.includes('uciok')) {
+      worker.postMessage('isready')
+    }
+
+    if (line.includes('readyok')) {
+      setEngineReady(true)
+    }
+
+    if (line.startsWith('bestmove')) {
+      const uci = line.split(/\s+/)[1]
+
+      if (!uci || uci === '(none)' || uci === '0000') {
+        setAiThinking(false)
+        return
+      }
+
+      try {
+        const move = chessRef.current.move({
+          from: uci.substring(0, 2),
+          to: uci.substring(2, 4),
+          promotion: uci[4] || 'q'
+        })
+
+        if (move) {
+          setChessFen(chessRef.current.fen())
+          setMoveHistory(chessRef.current.history())
+          setChessStatus(getChessStatus(chessRef.current))
+          setSelectedSquare(null)
+          setLegalMoves([])
+        }
+      } catch (error) {
+        console.error('Stockfish move error:', error)
+      }
+
+      setAiThinking(false)
+    }
+  }
+
+  worker.onerror = (error) => {
+    console.error('Stockfish gagal dimuat:', error)
+    setChessStatus('ENGINE ERROR')
+    setAiThinking(false)
+  }
+
+  worker.postMessage('uci')
+
+  return () => {
+    worker.terminate()
+    stockfishRef.current = null
+    setEngineReady(false)
+  }
+}, [active])
+// AUTOMATIC AI TURN
+useEffect(() => {
+  if (active !== 'Catur') return
+  if (!engineReady) return
+  if (aiThinking) return
+  if (chessRef.current.isGameOver()) return
+
+  const playerTurn = chessPlayerColor === 'white' ? 'w' : 'b'
+
+  if (chessRef.current.turn() === playerTurn) return
+
+  const thinkingTime = {
+    lite: 200,
+    standard: 500,
+    strong: 900,
+    maximum: 1500
+  }
+
+  const time = thinkingTime[chessMode] || 500
+
+  setAiThinking(true)
+
+  stockfishRef.current.postMessage(
+    `position fen ${chessFen}`
+  )
+
+  stockfishRef.current.postMessage(
+    `go movetime ${time}`
+  )
+}, [
+  active,
+  engineReady,
+  chessFen,
+  chessPlayerColor,
+  chessMode,
+  aiThinking
+])
 const [previousPage, setPreviousPage] = useState('Dashboard')
 const [selectedNumber, setSelectedNumber] = useState(0)
 const [enteringMath, setEnteringMath] = useState(false)
