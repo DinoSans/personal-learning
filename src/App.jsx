@@ -1553,7 +1553,7 @@ const openChessIntro = () => {
   setTimeout(() => {
     setShowChessIntro(false)
     setActive('Chess Setup')
-  }, 10500)
+  }, 18000)
 }
   return (
     <div className="app">
@@ -3331,7 +3331,7 @@ const openChessIntro = () => {
   </div>
 )}
 {showChessIntro && (
-  <div className="chess-intro-overlay">
+  <div className="chess-intro-overlay" role="presentation" aria-label="ITB Quest Chess cinematic intro">
     <div className="chess-intro-scanlines"></div>
     <div className="chess-intro-grid"></div>
 
