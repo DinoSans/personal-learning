@@ -292,6 +292,82 @@ function CustomChessPiece({ piece, color }) {
   )
 }
 
+function ChessAIFace({ mode }) {
+  const faces = {
+    lite: {
+      color: '#49b77e',
+      eye: '#b9ffe0',
+      expression: 'smile',
+      name: 'NOVA',
+    },
+    standard: {
+      color: '#4c9edc',
+      eye: '#d9f2ff',
+      expression: 'normal',
+      name: 'ATLAS',
+    },
+    strong: {
+      color: '#d99a42',
+      eye: '#fff0c9',
+      expression: 'serious',
+      name: 'TITAN',
+    },
+    maximum: {
+      color: '#df5368',
+      eye: '#ffe2e8',
+      expression: 'angry',
+      name: 'OMEGA',
+    },
+  }
+
+  const face = faces[mode] || faces.standard
+
+  return (
+    <svg
+      className={`chess-ai-face face-${mode}`}
+      viewBox="0 0 100 100"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M18 35 L28 17 L42 25 H58 L72 17 L82 35 L78 73 Q75 88 62 88 H38 Q25 88 22 73Z"
+        fill={face.color}
+        stroke={face.eye}
+        strokeWidth="2"
+      />
+
+      <path
+        d="M50 8 L57 24 H43Z"
+        fill={face.eye}
+      />
+
+      <rect x="27" y="42" width="18" height="15" rx="5" fill={face.eye}/>
+      <rect x="55" y="42" width="18" height="15" rx="5" fill={face.eye}/>
+
+      {face.expression === 'smile' && (
+        <path d="M36 69 Q50 80 64 69" fill="none" stroke="#123c30" strokeWidth="4" strokeLinecap="round"/>
+      )}
+
+      {face.expression === 'normal' && (
+        <path d="M37 71 H63" stroke="#12344e" strokeWidth="5" strokeLinecap="round"/>
+      )}
+
+      {face.expression === 'serious' && (
+        <path d="M37 72 L63 72" stroke="#533313" strokeWidth="6" strokeLinecap="round"/>
+      )}
+
+      {face.expression === 'angry' && (
+        <>
+          <path d="M27 38 L45 45 M73 38 L55 45" stroke="#511b2a" strokeWidth="4"/>
+          <path d="M37 72 H63" stroke="#511b2a" strokeWidth="6" strokeLinecap="round"/>
+        </>
+      )}
+
+      <circle cx="18" cy="57" r="4" fill={face.eye}/>
+      <circle cx="82" cy="57" r="4" fill={face.eye}/>
+    </svg>
+  )
+}
+
 
 function App() {
   const [promotionPending, setPromotionPending] = useState(null)
@@ -1052,24 +1128,41 @@ useEffect(() => {
 
   if (chessRef.current.turn() === playerTurn) return
 
-  const thinkingTime = {
-    lite: 200,
-    standard: 500,
-    strong: 900,
-    maximum: 1500
+  const difficultySettings = {
+  lite: {
+    skill: 2,
+    time: 200
+  },
+  standard: {
+    skill: 8,
+    time: 500
+  },
+  strong: {
+    skill: 15,
+    time: 1000
+  },
+  maximum: {
+    skill: 20,
+    time: 2000
   }
+}
 
-  const time = thinkingTime[chessMode] || 500
+const settings = difficultySettings[chessMode] ||
+  difficultySettings.standard
 
-  setAiThinking(true)
+setAiThinking(true)
 
-  stockfishRef.current.postMessage(
-    `position fen ${chessFen}`
-  )
+stockfishRef.current.postMessage(
+  `setoption name Skill Level value ${settings.skill}`
+)
 
-  stockfishRef.current.postMessage(
-    `go movetime ${time}`
-  )
+stockfishRef.current.postMessage(
+  `position fen ${chessFen}`
+)
+
+stockfishRef.current.postMessage(
+  `go movetime ${settings.time}`
+)
 }, [
   active,
   engineReady,
@@ -2403,45 +2496,59 @@ if (!response.ok) {
         <h2>SELECT AI MODE</h2>
         <p>Choose your opponent's analysis level.</p>
 
-        <div className="chess-mode-grid">
+        
+<div className="chess-mode-grid">
 
-          <button
-            className={`chess-mode-card ${chessMode === 'lite' ? 'selected' : ''}`}
-            onClick={() => setChessMode('lite')}
-          >
-            <span>MODE 01</span>
-            <h3>LITE</h3>
-            <p>Analisis ringan dan cepat.</p>
-          </button>
+  <button
+    className={`chess-mode-card ${chessMode === 'lite' ? 'selected' : ''}`}
+    onClick={() => setChessMode('lite')}
+  >
+    <span>MODE 01</span>
+    <ChessAIFace mode="lite" />
+    <h3>LITE</h3>
+    <strong className="chess-ai-name">NOVA</strong>
+    <p>Analisis ringan dan cepat.</p>
+    {chessMode === 'lite' && <small className="ai-selected-label">✓ SELECTED</small>}
+  </button>
 
-          <button
-            className={`chess-mode-card ${chessMode === 'standard' ? 'selected' : ''}`}
-            onClick={() => setChessMode('standard')}
-          >
-            <span>MODE 02</span>
-            <h3>STANDARD</h3>
-            <p>Analisis seimbang.</p>
-          </button>
+  <button
+    className={`chess-mode-card ${chessMode === 'standard' ? 'selected' : ''}`}
+    onClick={() => setChessMode('standard')}
+  >
+    <span>MODE 02</span>
+    <ChessAIFace mode="standard" />
+    <h3>STANDARD</h3>
+    <strong className="chess-ai-name">ATLAS</strong>
+    <p>Analisis seimbang.</p>
+    {chessMode === 'standard' && <small className="ai-selected-label">✓ SELECTED</small>}
+  </button>
 
-          <button
-            className={`chess-mode-card ${chessMode === 'strong' ? 'selected' : ''}`}
-            onClick={() => setChessMode('strong')}
-          >
-            <span>MODE 03</span>
-            <h3>STRONG</h3>
-            <p>Analisis lebih mendalam.</p>
-          </button>
+  <button
+    className={`chess-mode-card ${chessMode === 'strong' ? 'selected' : ''}`}
+    onClick={() => setChessMode('strong')}
+  >
+    <span>MODE 03</span>
+    <ChessAIFace mode="strong" />
+    <h3>STRONG</h3>
+    <strong className="chess-ai-name">TITAN</strong>
+    <p>Analisis lebih mendalam.</p>
+    {chessMode === 'strong' && <small className="ai-selected-label">✓ SELECTED</small>}
+  </button>
 
-          <button
-            className={`chess-mode-card ${chessMode === 'maximum' ? 'selected' : ''}`}
-            onClick={() => setChessMode('maximum')}
-          >
-            <span>MODE 04</span>
-            <h3>MAXIMUM</h3>
-            <p>Analisis maksimal.</p>
-          </button>
+  <button
+    className={`chess-mode-card ${chessMode === 'maximum' ? 'selected' : ''}`}
+    onClick={() => setChessMode('maximum')}
+  >
+    <span>MODE 04</span>
+    <ChessAIFace mode="maximum" />
+    <h3>MAXIMUM</h3>
+    <strong className="chess-ai-name">OMEGA</strong>
+    <p>Analisis maksimal.</p>
+    {chessMode === 'maximum' && <small className="ai-selected-label">✓ SELECTED</small>}
+  </button>
 
-        </div>
+</div>
+
       </div>
 
       <div className="chess-setup-divider"></div>
@@ -2525,9 +2632,21 @@ if (!response.ok) {
     </div>
 
     <div className="holo-chess-status">
-      <span></span>
-      SYSTEM ONLINE
-    </div>
+  <span></span>
+  SYSTEM ONLINE
+</div>
+
+<div className={`chess-difficulty-indicator difficulty-${chessMode}`}>
+  <span>AI DIFFICULTY</span>
+  <strong>
+    {{
+      lite: 'LITE',
+      standard: 'STANDARD',
+      strong: 'STRONG',
+      maximum: 'MAXIMUM'
+    }[chessMode]}
+  </strong>
+</div>
   </div>
 
   <div className="holo-board-frame">

@@ -5598,3 +5598,84 @@ footer {
   font-size: 9px;
   font-weight: 800;
 }
+/* CHESS AI DIFFICULTY INDICATOR */
+
+.chess-difficulty-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 16px;
+  margin-top: 12px;
+  width: fit-content;
+  background: rgba(20, 45, 68, 0.85);
+  border: 1px solid rgba(100, 190, 255, 0.3);
+  border-radius: 10px;
+}
+
+.chess-difficulty-indicator span {
+  color: #8ba9c0;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.chess-difficulty-indicator strong {
+  color: #d9eaf5;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+.difficulty-lite {
+  border-color: #63bd8b;
+}
+
+.difficulty-standard {
+  border-color: #55a9e8;
+}
+
+.difficulty-strong {
+  border-color: #e7a64e;
+}
+
+.difficulty-maximum {
+  border-color: #e45e6b;
+}
+
+/* AI ROBOT FACES */
+
+.chess-ai-face {
+  width: 100px;
+  height: 100px;
+  margin: 16px auto;
+  display: block;
+  filter: drop-shadow(0 0 12px currentColor);
+  transition: transform 0.3s ease;
+}
+
+.chess-mode-card:hover .chess-ai-face {
+  transform: scale(1.12) translateY(-4px);
+}
+
+.chess-mode-card.selected .chess-ai-face {
+  transform: scale(1.08);
+}
+
+.chess-ai-name {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-top: 5px;
+  color: #70dfff;
+}
+
+.ai-selected-label {
+  display: inline-block;
+  margin-top: 12px;
+  color: #65ffc5;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.chess-mode-card {
+  position: relative;
+  overflow: hidden;
+}
