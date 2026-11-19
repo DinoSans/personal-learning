@@ -1898,6 +1898,7 @@ if (!response.ok) {
           <span>LOGIC CHALLENGE</span>
           <h3>NEURAL PUZZLE</h3>
           <p>CHALLENGE YOUR THINKING.</p>
+          onClick={() => setActive('Neural Puzzle')}
           <div className="games-card-bottom">
             <span>COMING SOON</span>
             <span>02 / 03</span>
@@ -1929,6 +1930,35 @@ if (!response.ok) {
       <span>YOUR WORLD. YOUR ADVENTURE.</span>
     </div>
 
+  </section>
+)}
+{active === 'Neural Puzzle' && (
+  <section className="neural-page">
+    <button
+      className="math-back-button"
+      onClick={() => setActive('Games')}
+    >
+      ← KEMBALI
+    </button>
+
+    <div className="neural-header">
+      <span>ITB QUEST · GAMES ZONE 02</span>
+      <h1>NEURAL PUZZLE</h1>
+      <p>CHALLENGE YOUR LOGIC. MASTER YOUR MIND.</p>
+    </div>
+
+    <div className="neural-game-grid">
+      <div
+        className="neural-game-card"
+        onClick={() => setActive('Catur')}
+      >
+        <div className="neural-game-icon">♟</div>
+        <span>LOGIC GAME 01</span>
+        <h2>CHESS</h2>
+        <p>Uji strategi dan kecerdasanmu dalam permainan catur.</p>
+        <div className="neural-play">ENTER GAME →</div>
+      </div>
+    </div>
   </section>
 )}
           <section className="welcome">

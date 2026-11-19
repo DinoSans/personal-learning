@@ -4591,3 +4591,129 @@ footer {
     flex-direction: column;
   }
 }
+.neural-page {
+  min-height: 100%;
+  padding: 30px;
+  color: #eaf5ff;
+  animation: neuralAppear .5s ease;
+}
+
+.neural-header {
+  text-align: center;
+  margin: 55px 0 45px;
+}
+
+.neural-header span {
+  color: #38bdf8;
+  letter-spacing: 4px;
+  font-size: 11px;
+}
+
+.neural-header h1 {
+  font-size: clamp(32px, 6vw, 58px);
+  letter-spacing: 5px;
+  margin: 15px 0;
+  text-shadow: 0 0 25px #168bff;
+}
+
+.neural-header p {
+  color: #829dbb;
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+
+.neural-game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 300px));
+  justify-content: center;
+  gap: 24px;
+}
+
+.neural-game-card {
+  padding: 30px;
+  border: 1px solid #1765a5;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #102a48, #071321);
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.neural-game-card:hover {
+  transform: translateY(-8px);
+  border-color: #38bdf8;
+  box-shadow: 0 0 30px #0879d455;
+}
+
+.neural-game-icon {
+  font-size: 65px;
+  color: #60caff;
+  margin-bottom: 20px;
+  text-shadow: 0 0 25px #168bff;
+}
+
+.neural-game-card span {
+  color: #38bdf8;
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+
+.neural-game-card h2 {
+  font-size: 27px;
+  letter-spacing: 4px;
+}
+
+.neural-game-card p {
+  color: #9bb1c9;
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+.neural-play {
+  color: #38bdf8;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-top: 25px;
+}
+
+.chess-coming-soon {
+  max-width: 600px;
+  margin: auto;
+  padding: 55px 20px;
+  text-align: center;
+  border: 1px solid #1765a5;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #102a48, #071321);
+}
+
+.chess-coming-soon div {
+  font-size: 90px;
+  color: #60caff;
+  text-shadow: 0 0 30px #168bff;
+}
+
+.chess-coming-soon h2 {
+  letter-spacing: 5px;
+}
+
+.chess-coming-soon p {
+  color: #38bdf8;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+@keyframes neuralAppear {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .neural-page {
+    padding: 18px;
+  }
+}
