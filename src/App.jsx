@@ -1888,7 +1888,11 @@ if (!response.ok) {
         </div>
       </div>
 
-      <div className="games-card games-card-two">
+      <div
+  className="games-card games-card-two"
+  onClick={() => setActive('Neural Puzzle')}
+  style={{ cursor: 'pointer' }}
+>
         <div className="games-card-art">
           <div className="games-art-glow"></div>
           <div className="games-art-icon">🧩</div>
@@ -1943,7 +1947,6 @@ if (!response.ok) {
     <div className="neural-header">
       <span>ITB QUEST · GAMES ZONE 02</span>
       <h1>NEURAL PUZZLE</h1>
-      onClick={() => setActive('Neural Puzzle')}
       <p>CHALLENGE YOUR LOGIC. MASTER YOUR MIND.</p>
     </div>
 
