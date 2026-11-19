@@ -123,15 +123,8 @@ export default function ChessIntro({ onComplete }) {
           </>
         ) : (
           <div className="chess-reveal">
-            <div className="chess-reveal-line" />
-            <div className="chess-reveal-small">
-              THE BATTLE BEGINS
-            </div>
-            <h1>CHESS</h1>
-            <div className="chess-reveal-bottom">
-              ITB QUEST CHESS ARENA
-            </div>
-          </div>
+  <h1>CHESS</h1>
+</div>
         )}
 
       </div>
