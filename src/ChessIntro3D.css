@@ -1,6 +1,23 @@
 .chess3d-overlay{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#020712;color:#eaf8ff;font-family:Inter, sans-serif;isolation:isolate}
 .chess3d-overlay canvas{position:absolute!important;inset:0;width:100%!important;height:100%!important;display:block}
-.chess3d-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 25%,rgba(0,4,15,.38) 72%,#02040c 120%),linear-gradient(0deg,rgba(0,9,25,.62),transparent 45%,rgba(0,7,20,.45)}
+.chess3d-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 25%,
+      rgba(0, 4, 15, .38) 72%,
+      #02040c 120%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(0, 9, 25, .62),
+      transparent 45%,
+      rgba(0, 7, 20, .45)
+    );
+}
 .chess3d-topline{position:absolute;top:28px;left:5vw;right:5vw;display:flex;justify-content:space-between;gap:16px;font-size:10px;letter-spacing:.22em;color:#8bdcff;text-shadow:0 0 15px #168bff}
 .chess3d-caption{position:absolute;left:50%;top:17%;transform:translateX(-50%);width:90%;text-align:center;display:grid;gap:10px;animation:chess3d-caption 18s ease both}
 .chess3d-caption span{font-size:clamp(12px,2vw,21px);font-weight:800;letter-spacing:.2em;text-shadow:0 0 20px #168bff}
