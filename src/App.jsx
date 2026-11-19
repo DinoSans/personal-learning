@@ -294,6 +294,7 @@ function CustomChessPiece({ piece, color }) {
 
 
 function App() {
+  const [promotionPending, setPromotionPending] = useState(null)
   const [user, setUser] = useState(null)
   const [authChecking, setAuthChecking] = useState(true)
   const [adminUsers, setAdminUsers] = useState([])
@@ -820,6 +821,7 @@ const [engineReady, setEngineReady] = useState(false)
 const [aiThinking, setAiThinking] = useState(false)
 const [selectedSquare, setSelectedSquare] = useState(null)
 const [legalMoves, setLegalMoves] = useState([])
+const [lastMove, setLastMove] = useState(null)
 const [moveHistory, setMoveHistory] = useState([])
 const [chessStatus, setChessStatus] = useState('WHITE TURN')
 const [chessSide, setChessSide] = useState('random')
@@ -882,11 +884,36 @@ function handleChessSquareClick(square) {
     // Jika kotak yang diklik adalah tujuan legal
     if (legalMoves.includes(square)) {
       try {
-        game.move({
-          from: selectedSquare,
-          to: square,
-          promotion: 'q'
-        })
+        const movingPiece = game.get(selectedSquare)
+
+const isPromotion =
+  movingPiece?.type === 'p' &&
+  (square[1] === '8' || square[1] === '1')
+
+if (isPromotion) {
+  setPromotionPending({
+    from: selectedSquare,
+    to: square,
+    color: movingPiece.color
+  })
+
+  return
+}
+
+const move = game.move({
+  from: selectedSquare,
+  to: square
+})
+
+setLastMove({
+  from: move.from,
+  to: move.to
+})
+
+setLastMove({
+  from: selectedSquare,
+  to: square
+})
 
         setChessFen(game.fen())
         setMoveHistory(game.history())
@@ -915,6 +942,32 @@ function handleChessSquareClick(square) {
     setSelectedSquare(null)
     setLegalMoves([])
   }
+}
+function completePromotion(piece) {
+  if (!promotionPending) return
+
+  const game = chessRef.current
+
+  const move = game.move({
+    from: promotionPending.from,
+    to: promotionPending.to,
+    promotion: piece
+  })
+
+  if (move) {
+    setLastMove({
+      from: move.from,
+      to: move.to
+    })
+
+    setChessFen(game.fen())
+    setMoveHistory(game.history())
+    setChessStatus(getChessStatus(game))
+  }
+
+  setPromotionPending(null)
+  setSelectedSquare(null)
+  setLegalMoves([])
 }
 // STOCKFISH ENGINE CONNECTION
 useEffect(() => {
@@ -955,7 +1008,12 @@ useEffect(() => {
         })
 
         if (move) {
-          setChessFen(chessRef.current.fen())
+  setLastMove({
+    from: move.from,
+    to: move.to
+  })
+
+  setChessFen(chessRef.current.fen())
           setMoveHistory(chessRef.current.history())
           setChessStatus(getChessStatus(chessRef.current))
           setSelectedSquare(null)
@@ -2506,20 +2564,25 @@ if (!response.ok) {
 
     const isSelected = selectedSquare === square
     const isLegal = legalMoves.includes(square)
+    const isLastMove =
+  lastMove?.from === square ||
+  lastMove?.to === square
 
     return (
       <div
         key={square}
         onClick={() => handleChessSquareClick(square)}
         className={`holo-square ${
-          (rowIndex + colIndex) % 2 === 0
-            ? 'holo-square-light'
-            : 'holo-square-dark'
-        } ${
-          isSelected ? 'holo-square-selected' : ''
-        } ${
-          isLegal ? 'holo-square-legal' : ''
-        }`}
+  (rowIndex + colIndex) % 2 === 0
+    ? 'holo-square-light'
+    : 'holo-square-dark'
+} ${
+  isLastMove ? 'holo-square-last-move' : ''
+} ${
+  isSelected ? 'holo-square-selected' : ''
+} ${
+  isLegal ? 'holo-square-legal' : ''
+}`}
       >
         {colIndex === 0 && (
           <span className="holo-coordinate holo-rank">
@@ -2561,6 +2624,47 @@ if (!response.ok) {
 )}
     </div>
   </div>
+    {/* PAWN PROMOTION MODAL */}
+  {promotionPending && (
+    <div className="promotion-overlay">
+      <div className="promotion-modal">
+        <span className="section-kicker">
+          CHESS ARENA
+        </span>
+
+        <h2>PAWN PROMOTION</h2>
+        <p>Choose your promotion piece</p>
+
+        <div className="promotion-options">
+          {['q', 'r', 'b', 'n'].map((piece) => (
+            <button
+              key={piece}
+              className="promotion-option"
+              onClick={() => completePromotion(piece)}
+            >
+              <CustomChessPiece
+                piece={piece}
+                color={
+                  promotionPending.color === 'w'
+                    ? 'white'
+                    : 'black'
+                }
+              />
+
+              <span>
+                {{
+                  q: 'QUEEN',
+                  r: 'ROOK',
+                  b: 'BISHOP',
+                  n: 'KNIGHT'
+                }[piece]}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )}
 
   <div className="holo-chess-bottom">
     <div className="holo-player">

@@ -5514,3 +5514,87 @@ footer {
 .holo-square:hover {
   filter: brightness(1.15);
 }
+/* CHESS LAST MOVE HIGHLIGHT */
+
+.holo-square-last-move {
+  background: #789b45 !important;
+  transition: background 0.2s ease;
+}
+
+.holo-square-light.holo-square-last-move {
+  background: #b5cf70 !important;
+}
+
+.holo-square-dark.holo-square-last-move {
+  background: #789b45 !important;
+}
+/* CHESS PAWN PROMOTION */
+
+.promotion-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 8, 18, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.promotion-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px;
+  text-align: center;
+  background: #0b1c2e;
+  border: 1px solid rgba(100, 190, 255, 0.4);
+  border-radius: 18px;
+  box-shadow: 0 0 35px rgba(30, 150, 255, 0.18);
+}
+
+.promotion-modal h2 {
+  color: #d9eaf5;
+  margin: 12px 0;
+}
+
+.promotion-modal p {
+  color: #91aabe;
+  margin-bottom: 24px;
+}
+
+.promotion-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.promotion-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 5px;
+  color: #d9eaf5;
+  background: #142c42;
+  border: 1px solid #315574;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.promotion-option:hover {
+  background: #244d72;
+  border-color: #79c9ff;
+  transform: translateY(-4px);
+}
+
+.promotion-option .custom-chess-piece {
+  width: 42px;
+  height: 42px;
+}
+
+.promotion-option span {
+  font-size: 9px;
+  font-weight: 800;
+}
