@@ -26,273 +26,402 @@ function Metal({ color = silver, glow = blue, intensity = 0.22 }) {
   )
 }
 
+
 function Piece({ type = 'pawn', color = silver, position = [0, 0.08, 0], scale = 1, animate }) {
   const group = useRef()
   const darkPiece = color === dark
   const glow = darkPiece ? '#087cff' : '#35c8ff'
+  const armor = darkPiece ? '#07172c' : '#263d55'
+  const edge = darkPiece ? '#123c68' : '#a9eaff'
 
-  
-useFrame(({ clock }, delta) => {
-  if (!group.current) return
+  useFrame(({ clock }, delta) => {
+    if (!group.current) return
 
-  const t = clock.elapsedTime
-  const g = group.current
+    const t = clock.elapsedTime
+    const g = group.current
+    const targetPosition = new THREE.Vector3(...position)
+    const targetRotation = new THREE.Euler(0, 0, 0)
 
-  const targetPosition = new THREE.Vector3(...position)
-  const targetRotation = new THREE.Euler(0, 0, 0)
+    if (animate === 'pawn') {
+      const p = smooth(1.1, 4.2, t)
+      targetPosition.x = THREE.MathUtils.lerp(-2.55, -0.25, p)
+      targetPosition.y += Math.pow(Math.max(0, Math.sin(p * Math.PI * 5)), 1.5) * 0.2
+      targetRotation.y = Math.sin(p * Math.PI * 5) * 0.12
+    }
 
-  if (animate === 'pawn') {
-    const p = smooth(1.1, 4.2, t)
+    if (animate === 'knight') {
+      const p = smooth(4.1, 6.15, t)
+      targetPosition.x = THREE.MathUtils.lerp(2.7, -0.15, p)
+      targetPosition.z = THREE.MathUtils.lerp(0.5, 2.15, p)
+      targetPosition.y += Math.sin(p * Math.PI) * 1.8
+      targetRotation.z = -Math.sin(p * Math.PI) * 0.65
+      targetRotation.y = -p * 0.45
 
-    targetPosition.x = THREE.MathUtils.lerp(-2.55, -0.25, p)
-    targetPosition.y +=
-      Math.pow(Math.max(0, Math.sin(p * Math.PI * 5)), 1.5) * 0.2
+      const impact = Math.exp(-Math.pow((t - 6.15) / 0.12, 2))
+      targetPosition.y += impact * 0.22
+      targetRotation.x += impact * 0.28
+    }
 
-    targetRotation.y = Math.sin(p * Math.PI * 5) * 0.12
-  }
+    if (animate === 'bishop') {
+      const p = smooth(7.1, 9.1, t)
+      targetPosition.x = THREE.MathUtils.lerp(-2.8, 0.25, p)
+      targetPosition.z = THREE.MathUtils.lerp(-1.8, -0.5, p)
+      targetPosition.y += Math.sin(p * Math.PI) * 1.3
+      targetRotation.z = -Math.sin(p * Math.PI) * 0.45
+      targetRotation.y = p * 0.6
+    }
 
-  if (animate === 'knight') {
-    const p = smooth(4.1, 6.15, t)
+    if (animate === 'king') {
+      targetPosition.y += Math.sin(t * 2.2) * 0.045
+      targetRotation.y = Math.sin(t * 0.65) * 0.12
+    }
 
-    targetPosition.x = THREE.MathUtils.lerp(2.7, -0.15, p)
-    targetPosition.z = THREE.MathUtils.lerp(0.5, 2.15, p)
+    if (!animate) {
+      targetPosition.y += Math.sin(t * 1.4 + position[0]) * 0.025
+      targetRotation.y = Math.sin(t * 0.5) * 0.035
+    }
 
-    // Lompatan dengan lengkungan tinggi
-    targetPosition.y += Math.sin(p * Math.PI) * 1.8
+    const smoothing = 1 - Math.exp(-delta * 7)
+    g.position.lerp(targetPosition, smoothing)
+    g.rotation.x = THREE.MathUtils.damp(g.rotation.x, targetRotation.x, 8, delta)
+    g.rotation.y = THREE.MathUtils.damp(g.rotation.y, targetRotation.y, 8, delta)
+    g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotation.z, 8, delta)
+  })
 
-    // Condong ke depan saat menyerang
-    targetRotation.z = -Math.sin(p * Math.PI) * 0.65
-    targetRotation.y = -p * 0.45
+  const bodyMaterial = (
+    <meshStandardMaterial
+      color={armor}
+      metalness={1}
+      roughness={0.2}
+      emissive={glow}
+      emissiveIntensity={0.28}
+    />
+  )
 
-    // Recoil ketika benturan
-    const impact = Math.exp(-Math.pow((t - 6.15) / 0.12, 2))
-    targetPosition.y += impact * 0.22
-    targetRotation.x += impact * 0.28
-  }
-
-  if (animate === 'bishop') {
-    const p = smooth(7.1, 9.1, t)
-
-    targetPosition.x = THREE.MathUtils.lerp(-2.8, 0.25, p)
-    targetPosition.z = THREE.MathUtils.lerp(-1.8, -0.5, p)
-    targetPosition.y += Math.sin(p * Math.PI) * 1.3
-
-    targetRotation.z = -Math.sin(p * Math.PI) * 0.45
-    targetRotation.y = p * 0.6
-  }
-
-  if (animate === 'king') {
-    targetPosition.y += Math.sin(t * 2.2) * 0.045
-    targetRotation.y = Math.sin(t * 0.65) * 0.12
-  }
-
-  if (!animate) {
-    targetPosition.y += Math.sin(t * 1.4 + position[0]) * 0.025
-    targetRotation.y = Math.sin(t * 0.5) * 0.035
-  }
-
-  // Smooth movement with damping
-  const smoothing = 1 - Math.exp(-delta * 7)
-
-  g.position.lerp(targetPosition, smoothing)
-  g.rotation.x = THREE.MathUtils.damp(g.rotation.x, targetRotation.x, 8, delta)
-  g.rotation.y = THREE.MathUtils.damp(g.rotation.y, targetRotation.y, 8, delta)
-  g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotation.z, 8, delta)
-})
-
+  const brightMaterial = (
+    <meshStandardMaterial
+      color={edge}
+      metalness={0.95}
+      roughness={0.14}
+      emissive={glow}
+      emissiveIntensity={0.75}
+    />
+  )
 
   return (
     <group ref={group} position={position} scale={scale}>
-      {/* Layered metallic base */}
-      <mesh castShadow position={[0, 0.12, 0]}>
-        <cylinderGeometry args={[0.31, 0.43, 0.17, 48]} />
-        <Metal color={color} glow={glow} />
+      {/* PREMIUM ARMORED BASE */}
+      <mesh castShadow position={[0, 0.11, 0]}>
+        <cylinderGeometry args={[0.32, 0.45, 0.17, 64]} />
+        {bodyMaterial}
       </mesh>
 
-      <mesh castShadow position={[0, 0.23, 0]}>
-        <cylinderGeometry args={[0.29, 0.32, 0.07, 48]} />
-        <meshStandardMaterial color="#8bdfff" metalness={1} roughness={0.12} />
+      <mesh position={[0, 0.205, 0]}>
+        <cylinderGeometry args={[0.34, 0.34, 0.035, 64]} />
+        {brightMaterial}
       </mesh>
 
-      <mesh castShadow position={[0, 0.34, 0]}>
-        <cylinderGeometry args={[0.19, 0.29, 0.19, 40]} />
-        <Metal color={color} glow={glow} />
+      <mesh castShadow position={[0, 0.31, 0]}>
+        <cylinderGeometry args={[0.23, 0.32, 0.18, 48]} />
+        {bodyMaterial}
       </mesh>
 
-      <mesh position={[0, 0.45, 0]}>
-        <torusGeometry args={[0.2, 0.025, 10, 40]} />
-        <meshStandardMaterial color="#79dfff" metalness={1} roughness={0.12} emissive={glow} emissiveIntensity={0.8} />
+      <mesh position={[0, 0.415, 0]}>
+        <torusGeometry args={[0.245, 0.022, 12, 64]} />
+        {brightMaterial}
       </mesh>
 
-      {/* Pawn */}
+      {/* BASE ARMOR PANELS */}
+      {Array.from({ length: 8 }, (_, i) => {
+        const angle = (i / 8) * Math.PI * 2
+        return (
+          <group key={i} rotation={[0, angle, 0]}>
+            <mesh position={[0, 0.13, 0.365]}>
+              <boxGeometry args={[0.09, 0.105, 0.045]} />
+              {brightMaterial}
+            </mesh>
+          </group>
+        )
+      })}
+
+      {/* PAWN — RECON UNIT */}
       {type === 'pawn' && (
         <>
-          <mesh castShadow position={[0, 0.61, 0]}>
-            <sphereGeometry args={[0.19, 40, 40]} />
-            <Metal color={color} glow={glow} />
+          <mesh castShadow position={[0, 0.68, 0]}>
+            <cylinderGeometry args={[0.13, 0.22, 0.48, 32]} />
+            {bodyMaterial}
           </mesh>
-          <mesh position={[0, 0.81, 0]}>
-            <torusGeometry args={[0.09, 0.018, 10, 32]} />
-            <Metal color={color} glow={glow} />
+
+          <mesh position={[0, 0.91, 0]}>
+            <torusGeometry args={[0.15, 0.025, 12, 40]} />
+            {brightMaterial}
+          </mesh>
+
+          <mesh castShadow position={[0, 1.13, 0]}>
+            <icosahedronGeometry args={[0.19, 2]} />
+            {bodyMaterial}
+          </mesh>
+
+          <mesh position={[0, 1.13, 0.15]}>
+            <sphereGeometry args={[0.055, 20, 20]} />
+            <meshBasicMaterial color="#b9f4ff" />
+          </mesh>
+
+          <mesh position={[0, 1.13, 0]}>
+            <torusGeometry args={[0.22, 0.014, 8, 48]} />
+            {brightMaterial}
+          </mesh>
+
+          <mesh position={[0, 0.68, 0]}>
+            <cylinderGeometry args={[0.17, 0.17, 0.24, 32]} />
+            <meshBasicMaterial color={glow} wireframe />
           </mesh>
         </>
       )}
 
-      {/* Knight */}
+      {/* KNIGHT — CYBER MECH */}
       {type === 'knight' && (
         <>
-          <mesh castShadow position={[0, 0.7, 0]}>
-            <cylinderGeometry args={[0.14, 0.25, 0.42, 32]} />
-            <Metal color={color} glow={glow} />
+          {/* Mechanical neck */}
+          <mesh castShadow position={[0, 0.82, 0]} rotation={[0, 0, -0.42]}>
+            <capsuleGeometry args={[0.19, 0.52, 8, 20]} />
+            {bodyMaterial}
           </mesh>
 
-          <mesh castShadow position={[0, 1.02, 0]} rotation={[0, 0, -0.28]}>
-            <capsuleGeometry args={[0.19, 0.48, 8, 20]} />
-            <Metal color={color} glow={glow} />
+          {/* Horse head */}
+          <mesh castShadow position={[0.05, 1.2, 0.02]} rotation={[0, 0, -0.35]}>
+            <capsuleGeometry args={[0.16, 0.38, 8, 20]} />
+            {brightMaterial}
           </mesh>
 
-          <mesh castShadow position={[0.04, 1.31, 0.02]} rotation={[0, 0, -0.2]}>
-            <coneGeometry args={[0.2, 0.43, 4]} />
-            <Metal color={color} glow={glow} />
+          {/* Snout */}
+          <mesh castShadow position={[0.17, 1.12, 0.17]} rotation={[0, 0, -0.25]}>
+            <boxGeometry args={[0.2, 0.14, 0.27]} />
+            {bodyMaterial}
           </mesh>
 
-          <mesh castShadow position={[0.13, 1.15, 0.16]} rotation={[0, 0, -0.2]}>
-            <sphereGeometry args={[0.14, 24, 24]} />
-            <Metal color={color} glow={glow} />
-          </mesh>
-
-          <mesh position={[0.25, 1.17, 0.27]}>
-            <sphereGeometry args={[0.035, 16, 16]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-
-          <mesh position={[0.05, 1.49, 0.02]} rotation={[0, 0, -0.4]}>
-            <coneGeometry args={[0.09, 0.25, 12]} />
-            <Metal color={color} glow={glow} />
-          </mesh>
-        </>
-      )}
-
-      {/* Bishop */}
-      {type === 'bishop' && (
-        <>
-          <mesh castShadow position={[0, 0.79, 0]}>
-            <latheGeometry args={[
-              [
-                new THREE.Vector2(0.2, 0),
-                new THREE.Vector2(0.16, 0.15),
-                new THREE.Vector2(0.09, 0.4),
-                new THREE.Vector2(0.16, 0.56),
-                new THREE.Vector2(0.22, 0.7)
-              ],
-              32
-            ]} />
-            <Metal color={color} glow={glow} />
-          </mesh>
-          <mesh position={[0, 1.51, 0]}>
-            <sphereGeometry args={[0.1, 24, 24]} />
-            <Metal color={color} glow={glow} />
-          </mesh>
-          <mesh position={[0, 1.27, 0]} rotation={[0, 0, 0.6]}>
-            <boxGeometry args={[0.055, 0.42, 0.055]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-        </>
-      )}
-
-      {/* Queen */}
-      {type === 'queen' && (
-        <>
-          <mesh castShadow position={[0, 0.82, 0]}>
-            <latheGeometry args={[
-              [
-                new THREE.Vector2(0.22, 0),
-                new THREE.Vector2(0.13, 0.24),
-                new THREE.Vector2(0.1, 0.45),
-                new THREE.Vector2(0.22, 0.7)
-              ],
-              32
-            ]} />
-            <Metal color={color} glow={glow} />
-          </mesh>
-          <mesh position={[0, 1.56, 0]}>
-            <sphereGeometry args={[0.18, 32, 32]} />
-            <Metal color={color} glow={glow} />
-          </mesh>
-          {Array.from({ length: 8 }, (_, i) => (
-            <mesh key={i} position={[
-              Math.cos(i * Math.PI / 4) * 0.2,
-              1.48 + (i % 2) * 0.12,
-              Math.sin(i * Math.PI / 4) * 0.2
-            ]}>
-              <sphereGeometry args={[0.065, 16, 16]} />
-              <meshStandardMaterial color="#a8ecff" metalness={1} roughness={0.1} emissive="#168bff" emissiveIntensity={1.1} />
+          {/* Ears */}
+          {[-1, 1].map((side) => (
+            <mesh
+              key={side}
+              position={[side * 0.11, 1.46, 0]}
+              rotation={[0, 0, side * -0.2]}
+            >
+              <coneGeometry args={[0.075, 0.28, 5]} />
+              {brightMaterial}
             </mesh>
           ))}
+
+          {/* Glowing eyes */}
+          <mesh position={[0.13, 1.25, 0.16]}>
+            <sphereGeometry args={[0.045, 20, 20]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+
+          <mesh position={[0.13, 1.25, -0.16]}>
+            <sphereGeometry args={[0.045, 20, 20]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+
+          {/* Mechanical mane */}
+          {Array.from({ length: 5 }, (_, i) => (
+            <mesh
+              key={i}
+              position={[-0.13, 1.42 - i * 0.12, -0.02]}
+              rotation={[0, 0, -0.4]}
+            >
+              <boxGeometry args={[0.12, 0.2, 0.12]} />
+              {brightMaterial}
+            </mesh>
+          ))}
+
+          {/* Neck armor */}
+          <mesh position={[-0.18, 0.83, 0.08]} rotation={[0, 0, -0.42]}>
+            <boxGeometry args={[0.12, 0.48, 0.31]} />
+            {bodyMaterial}
+          </mesh>
+
+          <pointLight position={[0, 1.2, 0.4]} color={glow} intensity={1.3} distance={2} />
         </>
       )}
 
-      {/* King */}
-      {type === 'king' && (
+      {/* BISHOP — PLASMA GUARD */}
+      {type === 'bishop' && (
         <>
-          <mesh castShadow position={[0, 0.85, 0]}>
+          <mesh castShadow position={[0, 0.88, 0]}>
+            <latheGeometry args={[
+              [
+                new THREE.Vector2(0.23, 0),
+                new THREE.Vector2(0.17, 0.18),
+                new THREE.Vector2(0.11, 0.42),
+                new THREE.Vector2(0.18, 0.62),
+                new THREE.Vector2(0.22, 0.76),
+                new THREE.Vector2(0.08, 0.9)
+              ],
+              48
+            ]} />
+            {bodyMaterial}
+          </mesh>
+
+          <mesh position={[0, 1.7, 0]}>
+            <octahedronGeometry args={[0.16, 1]} />
+            {brightMaterial}
+          </mesh>
+
+          <mesh position={[0, 1.34, 0]} rotation={[0, 0, 0.62]}>
+            <boxGeometry args={[0.055, 0.48, 0.055]} />
+            <meshBasicMaterial color="#d8faff" />
+          </mesh>
+
+          <mesh position={[0, 1.34, 0]} rotation={[0, 0, -0.62]}>
+            <boxGeometry args={[0.025, 0.35, 0.025]} />
+            <meshBasicMaterial color={glow} />
+          </mesh>
+
+          <mesh position={[0, 1.12, 0]}>
+            <torusGeometry args={[0.2, 0.018, 8, 48]} />
+            {brightMaterial}
+          </mesh>
+        </>
+      )}
+
+      {/* QUEEN — EMPRESS CORE */}
+      {type === 'queen' && (
+        <>
+          <mesh castShadow position={[0, 0.9, 0]}>
             <latheGeometry args={[
               [
                 new THREE.Vector2(0.24, 0),
                 new THREE.Vector2(0.15, 0.22),
-                new THREE.Vector2(0.11, 0.5),
-                new THREE.Vector2(0.23, 0.78)
+                new THREE.Vector2(0.11, 0.48),
+                new THREE.Vector2(0.2, 0.72),
+                new THREE.Vector2(0.25, 0.84)
               ],
-              40
+              48
             ]} />
-            <Metal color={color} glow={glow} intensity={0.45} />
+            {bodyMaterial}
           </mesh>
 
-          <mesh position={[0, 1.65, 0]}>
-            <sphereGeometry args={[0.2, 32, 32]} />
-            <Metal color={color} glow={glow} intensity={0.6} />
+          <mesh position={[0, 1.75, 0]}>
+            <icosahedronGeometry args={[0.2, 2]} />
+            {brightMaterial}
           </mesh>
 
-          <mesh position={[0, 1.98, 0]}>
-            <boxGeometry args={[0.13, 0.56, 0.13]} />
-            <meshStandardMaterial color="#b7f0ff" metalness={1} roughness={0.1} emissive="#168bff" emissiveIntensity={1} />
-          </mesh>
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = i * Math.PI / 4
+            return (
+              <group key={i} rotation={[0, angle, 0]}>
+                <mesh position={[0, 1.69, 0.23]}>
+                  <coneGeometry args={[0.075, 0.3, 5]} />
+                  {brightMaterial}
+                </mesh>
+              </group>
+            )
+          })}
 
-          <mesh position={[0, 2.08, 0]}>
-            <boxGeometry args={[0.43, 0.13, 0.13]} />
-            <meshStandardMaterial color="#b7f0ff" metalness={1} roughness={0.1} emissive="#168bff" emissiveIntensity={1} />
+          <mesh position={[0, 1.47, 0]}>
+            <torusGeometry args={[0.24, 0.025, 12, 48]} />
+            {brightMaterial}
           </mesh>
         </>
       )}
 
-      {/* Rook */}
-      {type === 'rook' && (
+      {/* KING — TITAN COMMANDER */}
+      {type === 'king' && (
         <>
-          <mesh castShadow position={[0, 0.83, 0]}>
-            <cylinderGeometry args={[0.24, 0.29, 0.68, 12]} />
-            <Metal color={color} glow={glow} />
+          <mesh castShadow position={[0, 0.96, 0]}>
+            <latheGeometry args={[
+              [
+                new THREE.Vector2(0.27, 0),
+                new THREE.Vector2(0.17, 0.2),
+                new THREE.Vector2(0.13, 0.48),
+                new THREE.Vector2(0.22, 0.73),
+                new THREE.Vector2(0.28, 0.88)
+              ],
+              64
+            ]} />
+            {bodyMaterial}
           </mesh>
-          <mesh position={[0, 1.22, 0]}>
-            <cylinderGeometry args={[0.31, 0.24, 0.14, 12]} />
-            <Metal color={color} glow={glow} />
+
+          <mesh position={[0, 1.84, 0]}>
+            <icosahedronGeometry args={[0.23, 2]} />
+            {brightMaterial}
           </mesh>
-          {Array.from({ length: 8 }, (_, i) => (
-            <mesh key={i} position={[
-              Math.cos(i * Math.PI / 4) * 0.25,
-              1.34,
-              Math.sin(i * Math.PI / 4) * 0.25
-            ]}>
-              <boxGeometry args={[0.13, 0.2, 0.13]} />
-              <Metal color={color} glow={glow} />
+
+          {/* Crown cross */}
+          <mesh position={[0, 2.18, 0]}>
+            <boxGeometry args={[0.12, 0.55, 0.12]} />
+            {brightMaterial}
+          </mesh>
+
+          <mesh position={[0, 2.25, 0]}>
+            <boxGeometry args={[0.42, 0.12, 0.12]} />
+            {brightMaterial}
+          </mesh>
+
+          {/* Shoulder armor */}
+          {[-1, 1].map((side) => (
+            <mesh
+              key={side}
+              position={[side * 0.24, 1.43, 0]}
+              rotation={[0, 0, side * -0.25]}
+            >
+              <boxGeometry args={[0.2, 0.3, 0.34]} />
+              {bodyMaterial}
             </mesh>
           ))}
+
+          <mesh position={[0, 1.55, 0]}>
+            <torusGeometry args={[0.27, 0.025, 12, 48]} />
+            {brightMaterial}
+          </mesh>
+
+          <pointLight position={[0, 1.8, 0]} color={glow} intensity={2} distance={3} />
         </>
       )}
 
-      <pointLight position={[0, 0.8, 0]} color={glow} intensity={0.7} distance={2.4} />
+      {/* ROOK — SIEGE FORTRESS */}
+      {type === 'rook' && (
+        <>
+          <mesh castShadow position={[0, 0.86, 0]}>
+            <cylinderGeometry args={[0.25, 0.34, 0.76, 8]} />
+            {bodyMaterial}
+          </mesh>
+
+          <mesh position={[0, 1.27, 0]}>
+            <cylinderGeometry args={[0.34, 0.25, 0.15, 8]} />
+            {brightMaterial}
+          </mesh>
+
+          {Array.from({ length: 8 }, (_, i) => {
+            const angle = i * Math.PI / 4
+            return (
+              <group key={i} rotation={[0, angle, 0]}>
+                <mesh position={[0, 1.43, 0.24]}>
+                  <boxGeometry args={[0.14, 0.24, 0.16]} />
+                  {brightMaterial}
+                </mesh>
+              </group>
+            )
+          })}
+
+          <mesh position={[0, 0.9, 0]}>
+            <cylinderGeometry args={[0.27, 0.27, 0.42, 8]} />
+            <meshBasicMaterial color={glow} wireframe />
+          </mesh>
+
+          <mesh position={[0, 1.04, 0]}>
+            <torusGeometry args={[0.28, 0.025, 8, 40]} />
+            {brightMaterial}
+          </mesh>
+        </>
+      )}
+
+      <pointLight position={[0, 0.9, 0]} color={glow} intensity={0.8} distance={2.8} />
     </group>
   )
 }
+
 
 function ChessBoard() {
   const tiles = []
