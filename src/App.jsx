@@ -862,6 +862,60 @@ function getChessStatus(game) {
 
   return `${game.turn() === 'w' ? 'WHITE' : 'BLACK'} TURN`
 }
+// HANDLE PLAYER CHESS MOVE
+function handleChessSquareClick(square) {
+  const game = chessRef.current
+
+  if (active !== 'Catur') return
+  if (aiThinking) return
+  if (game.isGameOver()) return
+
+  const playerTurn = chessPlayerColor === 'white' ? 'w' : 'b'
+
+  // Pastikan hanya giliran pemain
+  if (game.turn() !== playerTurn) return
+
+  const clickedPiece = game.get(square)
+
+  // Jika sudah memilih bidak sebelumnya
+  if (selectedSquare) {
+    // Jika kotak yang diklik adalah tujuan legal
+    if (legalMoves.includes(square)) {
+      try {
+        game.move({
+          from: selectedSquare,
+          to: square,
+          promotion: 'q'
+        })
+
+        setChessFen(game.fen())
+        setMoveHistory(game.history())
+        setChessStatus(getChessStatus(game))
+        setSelectedSquare(null)
+        setLegalMoves([])
+
+        return
+      } catch (error) {
+        console.error('Chess move error:', error)
+      }
+    }
+  }
+
+  // Pilih bidak milik pemain
+  if (clickedPiece && clickedPiece.color === playerTurn) {
+    setSelectedSquare(square)
+
+    const moves = game.moves({
+      square,
+      verbose: true
+    })
+
+    setLegalMoves(moves.map(move => move.to))
+  } else {
+    setSelectedSquare(null)
+    setLegalMoves([])
+  }
+}
 // STOCKFISH ENGINE CONNECTION
 useEffect(() => {
   if (active !== 'Catur') return
@@ -2422,53 +2476,89 @@ if (!response.ok) {
     <div className="holo-board-glow"></div>
 
     <div className="holo-chess-board">
-      {chessBoardRows.map((row, rowIndex) =>
-        row.split("").map((piece, colIndex) => {
-          const isWhite = piece !== "." && piece === piece.toUpperCase()
+      {(
+  chessPlayerColor === 'black'
+    ? chessRef.current.board()
+        .slice()
+        .reverse()
+        .map(row => row.slice().reverse())
+    : chessRef.current.board()
+).map((row, rowIndex) =>
+  row.map((piece, colIndex) => {
+    const fileIndex =
+      chessPlayerColor === 'black'
+        ? 7 - colIndex
+        : colIndex
 
-          return (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={`holo-square ${
-                (rowIndex + colIndex) % 2 === 0
-                  ? "holo-square-light"
-                  : "holo-square-dark"
-              }`}
-            >
-              {colIndex === 0 && (
-                <span className="holo-coordinate holo-rank">
-                  {8 - rowIndex}
-                </span>
-              )}
+    const rank =
+      chessPlayerColor === 'black'
+        ? rowIndex + 1
+        : 8 - rowIndex
 
-              {rowIndex === 7 && (
-                <span className="holo-coordinate holo-file">
-                  {"abcdefgh"[colIndex]}
-                </span>
-              )}
+    const square = `${'abcdefgh'[fileIndex]}${rank}`
 
-              {piece !== "." && (
-                
+    const isWhite = piece?.color === 'w'
+    const pieceSymbol = piece
+      ? isWhite
+        ? piece.type.toUpperCase()
+        : piece.type
+      : '.'
 
+    const isSelected = selectedSquare === square
+    const isLegal = legalMoves.includes(square)
 
-<span
-  className={`holo-piece holo-piece-${piece.toLowerCase()} ${
-    isWhite ? "holo-piece-white" : "holo-piece-black"
-  }`}
->
-  <CustomChessPiece
-    piece={piece.toLowerCase()}
-    color={isWhite ? "white" : "black"}
-  />
-</span>
+    return (
+      <div
+        key={square}
+        onClick={() => handleChessSquareClick(square)}
+        className={`holo-square ${
+          (rowIndex + colIndex) % 2 === 0
+            ? 'holo-square-light'
+            : 'holo-square-dark'
+        } ${
+          isSelected ? 'holo-square-selected' : ''
+        } ${
+          isLegal ? 'holo-square-legal' : ''
+        }`}
+      >
+        {colIndex === 0 && (
+          <span className="holo-coordinate holo-rank">
+            {rank}
+          </span>
+        )}
 
+        {rowIndex === 7 && (
+          <span className="holo-coordinate holo-file">
+            {'abcdefgh'[fileIndex]}
+          </span>
+        )}
 
+        {isLegal && (
+          <span
+            className={`holo-legal-marker ${
+              piece ? 'holo-legal-capture' : ''
+            }`}
+          />
+        )}
 
-              )}
-            </div>
-          )
-        })
-      )}
+        {piece && (
+          <span
+            className={`holo-piece holo-piece-${pieceSymbol.toLowerCase()} ${
+              isWhite
+                ? 'holo-piece-white'
+                : 'holo-piece-black'
+            }`}
+          >
+            <CustomChessPiece
+              piece={piece.type}
+              color={isWhite ? 'white' : 'black'}
+            />
+          </span>
+        )}
+      </div>
+    )
+  })
+)}
     </div>
   </div>
 

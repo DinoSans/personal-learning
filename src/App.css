@@ -5469,3 +5469,48 @@ footer {
     font-size: 32px;
   }
 }
+/* CHESS INTERACTIVE BOARD */
+
+.holo-square {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.holo-square-selected {
+  background: #b5c96b !important;
+}
+
+.holo-square-legal {
+  cursor: pointer;
+}
+
+.holo-legal-marker {
+  position: absolute;
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: rgba(10, 20, 30, 0.35);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.holo-legal-capture {
+  width: 88%;
+  height: 88%;
+  border: 5px solid rgba(190, 65, 65, 0.75);
+  background: transparent;
+}
+
+.holo-square-selected .holo-piece,
+.holo-square-legal .holo-piece {
+  z-index: 3;
+  position: relative;
+}
+
+.holo-square:hover {
+  filter: brightness(1.15);
+}
