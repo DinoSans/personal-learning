@@ -1,5 +1,5 @@
 
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Stars } from '@react-three/drei'
 import * as THREE from 'three'
@@ -31,6 +31,53 @@ function Piece({ type = 'pawn', color = silver, position = [0, 0.08, 0], scale =
   const group = useRef()
   const darkPiece = color === dark
   const glow = darkPiece ? '#087cff' : '#35c8ff'
+    const armorTexture = useMemo(() => {
+    const size = 256
+    const data = new Uint8Array(size * size * 4)
+
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const i = (y * size + x) * 4
+
+        // Brushed metal grain
+        const grain =
+          Math.sin(x * 0.8) * 5 +
+          Math.sin(x * 2.7) * 3 +
+          Math.sin(y * 0.12) * 2
+
+        // Fine mechanical scratches
+        const scratch =
+          Math.sin(x * 0.35 + y * 0.025) > 0.985 ? -45 : 0
+
+        const noise = Math.sin(x * 12.3 + y * 7.7) * 4
+        const value = THREE.MathUtils.clamp(
+          215 + grain + scratch + noise,
+          110,
+          255
+        )
+
+        data[i] = value
+        data[i + 1] = value
+        data[i + 2] = value
+        data[i + 3] = 255
+      }
+    }
+
+    const texture = new THREE.DataTexture(
+      data,
+      size,
+      size,
+      THREE.RGBAFormat
+    )
+
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.repeat.set(2, 2)
+    texture.colorSpace = THREE.SRGBColorSpace
+    texture.needsUpdate = true
+
+    return texture
+  }, [])
   const armor = darkPiece ? '#07172c' : '#263d55'
   const edge = darkPiece ? '#123c68' : '#a9eaff'
 
@@ -88,23 +135,26 @@ function Piece({ type = 'pawn', color = silver, position = [0, 0.08, 0], scale =
     g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotation.z, 8, delta)
   })
 
-  const bodyMaterial = (
+    const bodyMaterial = (
     <meshStandardMaterial
       color={armor}
+      map={armorTexture}
+      bumpMap={armorTexture}
+      bumpScale={0.035}
       metalness={1}
-      roughness={0.2}
+      roughness={0.28}
       emissive={glow}
       emissiveIntensity={0.28}
     />
   )
 
-  const brightMaterial = (
+    const brightMaterial = (
     <meshStandardMaterial
       color={edge}
-      metalness={0.95}
+      metalness={1}
       roughness={0.14}
       emissive={glow}
-      emissiveIntensity={0.75}
+      emissiveIntensity={0.9}
     />
   )
 
